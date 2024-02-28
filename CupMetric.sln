@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CupMetric", "CupMetric.csproj", "{EE0C39C4-243E-428D-AA27-9051862F10BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE0C39C4-243E-428D-AA27-9051862F10BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE0C39C4-243E-428D-AA27-9051862F10BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE0C39C4-243E-428D-AA27-9051862F10BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE0C39C4-243E-428D-AA27-9051862F10BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41A0E600-97D0-4E1D-B29B-92F44E43076F}
+	EndGlobalSection
+EndGlobal
