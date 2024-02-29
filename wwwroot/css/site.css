@@ -30,3 +30,7 @@ footer {
     border:1px solid black;
 }*/
 
+input.transparent-input {
+    background-color: transparent !important;
+    border: none !important;
+}
