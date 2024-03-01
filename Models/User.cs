@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CupMetric.Models
 {
+    [Table("USUARIO")]
     public class User
     {
         [Key]

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<CupMetric.Models.User>
+
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<h1 class="text-center">Listar Usuarios</h1>
+
+<p class="text-center">
+    <a class="btn btn-primary" asp-action="CreateUsuario">Crear nuevo Usuario</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdUsuario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdUsuario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                    <a class="btn btn-info" asp-action="DetailsUsuario" asp-route-idUsuario="@item.IdUsuario">Detalles</a>
+                    <a class="btn btn-warning" asp-action="EditUsuario" asp-route-idUsuario="@item.IdUsuario">Editar</a>
+                    <a class="btn btn-danger" asp-action="DeleteUsuario" asp-route-idUsuario="@item.IdUsuario">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

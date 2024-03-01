@@ -1,16 +1,57 @@
 ﻿@{
     ViewData["Title"] = "Conversor";
 }
-<div class="container">
+<div class="container pt-5 mt-sm-2 mt-lg-5 col-xl-8 col-md-10 col-sm-12 bg-body 
+rounded-3 bg-opacity-10 box-shadow minh-50">
     <div class="row">
-        <h1 class="text-center text-muted">Conversor de Unidades</h1>
 
         <form method="post">
-            <!-- Number input -->
-            <div class="form-outline mb-4" data-mdb-input-init>
-                <input type="number" id="formNumber" name="cantidad" class="form-control" />
-                <label class="form-label" for="formNumber">Cantidad</label>
+            <div class="container">
+                <div class="row px-5 py-3">
+                    <div class="col-sm-12 col-md-8">
+                        <!-- Number input -->
+                        <div class="form-outline mb-4 align-items-center text-center">
+                            <input type="number" id="formNumber" name="cantidad" class="form-control form-control-lg transparent-input text-center" min="0" />
+                            <label class="form-label" for="formNumber">Cantidad</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-4">
+                        <div class="form-outline mb-4 align-items-center text-center" data-mdb-input-init>
+                            <select class="form-select-lg transparent-select w-100">
+                                <option>kg</option>
+                                <option>gramos</option>
+                                <option>litros</option>
+                            </select>
+                            <label class="form-label" for="formNumber">Cantidad</label>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
+        <h1 class="text-center text-body">Conversor de Unidades</h1>
+    </div>
+
+    <div class="row py-5 px-4">
+        <div class="col-12">
+
+            <h1>Medidas</h1>
+            <div class="col-12">
+                <div class="col-6 col-sm-4 col-md-3 text-center">
+                    <img src="..." class="img-fluid" style="width:100px;height:100px"/>
+                    <h4>Cuchara x 1</h4>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+
+
+
+
+
+<style>
+    .minh-50 {
+        min-height: 50vh;
+    }
+</style>

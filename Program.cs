@@ -1,7 +1,17 @@
+using CupMetric.Data;
+using CupMetric.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+string connectionString = builder.Configuration.GetConnectionString("SqlServerUrl");
+
+builder.Services.AddTransient<RepositoryUsers>();
+
+builder.Services.AddDbContext<CupMetricContext>
+    (options => options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
