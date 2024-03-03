@@ -8,7 +8,7 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
         <form method="post">
             <div class="container">
                 <div class="row px-5 py-3">
-                    <div class="col-sm-12 col-md-8">
+                    <div class="col-sm-12 col-md-6">
                         <!-- Number input -->
                         <div class="form-outline mb-4 align-items-center text-center">
                             <input type="number" id="formNumber" name="cantidad" class="form-control form-control-lg transparent-input text-center" min="0" />
@@ -17,13 +17,17 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
                     </div>
                     <div class="col-sm-12 col-md-4">
                         <div class="form-outline mb-4 align-items-center text-center" data-mdb-input-init>
-                            <select class="form-select-lg transparent-select w-100">
-                                <option>kg</option>
+                            <select class="form-select-lg transparent-select w-100 rounded-2">
                                 <option>gramos</option>
+                                <option>mililitros</option>
+                                <option>kilos</option>
                                 <option>litros</option>
                             </select>
-                            <label class="form-label" for="formNumber">Cantidad</label>
+                            <label class="form-label" for="formNumber">Unidad</label>
                         </div>
+                    </div>
+                    <div class="col-sm-12 col-md-2 text-center">
+                        <button class="btn rounded-circle fs-3"><i class="bi bi-caret-right-fill"></i></button>
                     </div>
                 </div>
             </div>

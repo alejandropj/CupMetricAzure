@@ -9,5 +9,8 @@ namespace CupMetric.Data
         public CupMetricContext(DbContextOptions<CupMetricContext> options)
             : base(options) { }
         public DbSet<User> Users { get; set; }
+        public DbSet<Ingrediente> Ingredientes { get; set; }
+        public DbSet<Receta> Recetas { get; set; }
+        public DbSet<Utensilio> Utensilios { get; set; }
     }
 }

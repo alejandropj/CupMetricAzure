@@ -2,11 +2,36 @@
     ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
+<div class="container-fluid text-start p-5" style="background: linear-gradient(to bottom right,lightgray, darkgray);">
+    <h1 class="display-5 fw-bold text-center">Inicio</h1>
+    <div class="row align-items-center">
+        <div class="col-md-8 fs-4">
+            <p>En nuestra página web, puedes encontrar una variedad de herramientas útiles de conversión y deliciosas recetas para probar en casa.</p>
+            <p>Pero eso no es todo. Nos esforzamos por hacer de tu experiencia culinaria algo más emocionante y sostenible. ¿Tienes ingredientes 
+                que están a punto de vencer en tu despensa? ¡No te preocupes! Nuestra calculadora de unidades también te ofrece la posibilidad de 
+                buscar recetas de aprovechamiento utilizando esos ingredientes. Encontrarás una amplia variedad de recetas deliciosas y creativas para 
+                aprovechar al máximo lo que tienes a mano.</p>
+            <p>¿Qué te gustaría hacer hoy?</p>
+        </div>
+        <div class="col-md-4"><img src="~/images/cupmetric-logo.png" style="width:350px" /></div>
+    </div>
+
+
+
+    <div class="text-center">
+        <a class="btn btn-sm btn-dark" asp-controller="Converter" asp-action="Index">Acceda a la conversión</a>
+        <a class="btn btn-sm btn-dark" asp-controller="User" asp-action="Login">Inicia sesión</a>
+    </div>
+
+</div>
+<br />
+<div class="container-fluid text-center" style="background: linear-gradient(to bottom right,lightgray, darkgray);">
     <h1>Inicio</h1>
+
     <div class="">
         <a class="btn btn-sm btn-dark" asp-controller="Converter" asp-action="Index">Acceda a la conversión</a>
         <a class="btn btn-sm btn-dark" asp-controller="User" asp-action="Login">Inicia sesión</a>
     </div>
-    
+
 </div>
+
