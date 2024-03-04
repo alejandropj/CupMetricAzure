@@ -17,6 +17,12 @@ namespace CupMetric.Repositories
             string sql = "SELECT * FROM USUARIO";
             var consulta = this.context.Users.FromSqlRaw(sql);
             return await consulta.ToListAsync();
+        }             
+        public async Task<int> CountUsers()
+        {
+            var consulta = this.context.Users.CountAsync();
+            int res = (int)consulta.Result;
+            return res;
         }        
         public async Task<User> FindUserById(int IdUser)
         {

@@ -1,11 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CupMetric.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CupMetric.Controllers
 {
     public class AdminController : Controller
     {
-        public IActionResult Index()
+        private RepositoryUsers repositoryUsers { get; set; }
+        public AdminController(RepositoryUsers repo)
         {
+            this.repositoryUsers = repo;
+        }
+        public async Task<IActionResult> Index()
+        {
+            int conteo = await this.repositoryUsers.CountUsers();
+            ViewData["CONTEOUSERS"] = conteo;
             return View();
         }
     }

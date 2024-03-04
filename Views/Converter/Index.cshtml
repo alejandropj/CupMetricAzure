@@ -7,11 +7,13 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
 
         <form method="post">
             <div class="container">
+                <h1 class="text-center text-body">Conversor</h1>
+
                 <div class="row px-5 py-3">
                     <div class="col-sm-12 col-md-6">
                         <!-- Number input -->
                         <div class="form-outline mb-4 align-items-center text-center">
-                            <input type="number" id="formNumber" name="cantidad" class="form-control form-control-lg transparent-input text-center" min="0" />
+                            <input type="number" id="formNumber" name="cantidad" class="form-control form-control-lg transparent-input text-center" min="0" placeholder="Introduce cantidad"/>
                             <label class="form-label" for="formNumber">Cantidad</label>
                         </div>
                     </div>
@@ -32,12 +34,12 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
                 </div>
             </div>
         </form>
-        <h1 class="text-center text-body">Conversor de Unidades</h1>
     </div>
-
+    @if (Model != null)
+    {
+    <hr />
     <div class="row py-5 px-4">
         <div class="col-12">
-
             <h1>Medidas</h1>
             <div class="col-12">
                 <div class="col-6 col-sm-4 col-md-3 text-center">
@@ -47,6 +49,8 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
             </div>
         </div>
     </div>
+
+    }
 </div>
 
 
