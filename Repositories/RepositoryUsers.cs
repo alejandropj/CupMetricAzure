@@ -1,4 +1,5 @@
 ﻿using CupMetric.Data;
+using CupMetric.Helpers;
 using CupMetric.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -12,44 +13,68 @@ namespace CupMetric.Repositories
         {
             this.context = context;
         }
-        public async Task<List<User>> GetUsers()
+        public async Task<User> LoginUserAsync(string email, string password)
         {
-            string sql = "SELECT * FROM USUARIO";
-            var consulta = this.context.Users.FromSqlRaw(sql);
-            return await consulta.ToListAsync();
+            User user = await this.context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (user != null)
+            {
+                string salt = user.Salt;
+                byte[] passTemp = HelperEncrypt.EncryptPassword(password, salt);
+                byte[] passUser = user.Password;
+                bool response = HelperTools.CompareArrays(passTemp, passUser);
+                if (response)
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
+        public async Task RegisterUserAsync(string nombre, string email, string password)
+        {
+            User user = new User();
+            user.IdUsuario = 0;
+            user.Nombre = nombre;
+            user.Email = email;
+            user.Salt = HelperTools.GenerateSalt();
+            user.Password = HelperEncrypt.EncryptPassword(password, user.Salt);
+            user.IdRol = 1;
+            this.context.Users.Add(user);
+            await this.context.SaveChangesAsync();
+            //return user;
+        }
+
+        public async Task<List<User>> GetUsersAsync()
+        {
+            var consulta = await this.context.Users.ToListAsync();
+            return consulta;
         }             
-        public async Task<int> CountUsers()
+        public async Task<int> CountUsersAsync()
         {
             var consulta = this.context.Users.CountAsync();
-            int res = (int)consulta.Result;
-            return res;
+            int count = (int)consulta.Result;
+            return count;
         }        
-        public async Task<User> FindUserById(int IdUser)
+        public async Task<User> FindUserByIdAsync(int IdUser)
         {
-            string sql = "SELECT * FROM USUARIO WHERE IDUSUARIO = @IDUSUARIO";
-            SqlParameter pamId = new SqlParameter("@IDUSUARIO", IdUser);
-            var consulta = this.context.Users.FromSqlRaw(sql, pamId);
-            User usuario = consulta.AsEnumerable().FirstOrDefault();
-            return usuario;
-        }        
-        public async Task CreateUser(User usuario)
+            var consulta = from datos in this.context.Users
+                           where datos.IdUsuario == IdUser
+                           select datos;
+            return consulta.AsEnumerable().FirstOrDefault();
+        }
+    
+        public async Task UpdateUserAsync(int idUser, string nombre, string email, string password)
         {
-            string sql = "INSERT INTO USUARIO VALUES (NULL, @NOMBRE, @EMAIL, @PASSWORD, 2)";
-            SqlParameter pamNombre = new SqlParameter("@NOMBRE", usuario.Nombre);
-            SqlParameter pamEmail = new SqlParameter("@EMAIL", usuario.Email);
-            SqlParameter pamPassword = new SqlParameter("@PASSWORD", usuario.Password);
-            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre, pamEmail, pamPassword);
+            string sql = "UPDATE USUARIO SET NOMBRE= @NOMBRE, EMAIL= @EMAIL, SALT = @SALT, PASSWORD = @PASSWORD WHERE IDUSUARIO = @IDUSUARIO";
+            string salt = HelperTools.GenerateSalt();
+            byte[] passwordByte = HelperEncrypt.EncryptPassword(password, salt);
+            SqlParameter pamNombre = new SqlParameter("@NOMBRE", nombre);
+            SqlParameter pamEmail = new SqlParameter("@EMAIL", email);
+            SqlParameter pamSalt = new SqlParameter("@SALT", salt);
+            SqlParameter pamPassword = new SqlParameter("@PASSWORD", passwordByte);
+            SqlParameter pamId = new SqlParameter("@IDUSUARIO", idUser);
+            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre, pamEmail, pamSalt, pamPassword, pamId);
         }        
-        public async Task UpdateUser(User usuario)
-        {
-            string sql = "UPDATE USUARIO SET NOMBRE= @NOMBRE, EMAIL= @EMAIL, PASSWORD = @PASSWORD WHERE IDUSUARIO = @IDUSUARIO";
-            SqlParameter pamId = new SqlParameter("@IDUSUARIO", usuario.IdUsuario);
-            SqlParameter pamNombre = new SqlParameter("@NOMBRE", usuario.Nombre);
-            SqlParameter pamEmail = new SqlParameter("@EMAIL", usuario.Email);
-            SqlParameter pamPassword = new SqlParameter("@PASSWORD", usuario.Password);
-            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamId, pamNombre, pamEmail, pamPassword);
-        }        
-        public async Task DeleteUser(int idUsuario)
+        public async Task DeleteUserAsync(int idUsuario)
         {
             string sql = "DELETE FROM USUARIO WHERE IDUSUARIO = @IDUSUARIO";
             SqlParameter pamId = new SqlParameter("@IDUSUARIO", idUsuario);

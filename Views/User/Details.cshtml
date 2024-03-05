@@ -4,7 +4,7 @@
     ViewData["Title"] = "Detalle Usuario";
 }
 
-<a asp-action="ListUsuarios">Volver</a>
+<a asp-action="List">Volver</a>
 
 
 <h1>Detalle Usuario</h1>
@@ -30,9 +30,15 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Email)
+        </dd>        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdRol)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdRol)
         </dd>
     </dl>
 </div>
 <div>
-    <a class="btn btn-warning" asp-action="EditUsuario" asp-route-idUsuario="@Model.IdUsuario">Editar</a>
+    <a class="btn btn-warning" asp-action="Edit" asp-route-idUsuario="@Model.IdUsuario">Editar</a>
 </div>

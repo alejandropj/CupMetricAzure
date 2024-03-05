@@ -12,13 +12,17 @@ namespace CupMetric.Repositories
         {
             this.context = context;
         }
-        public async Task<List<Receta>> GetRecetas()
+        public async Task<List<Receta>> GetRecetasAsync()
         {
-            string sql = "SELECT * FROM RECETA";
-            var consulta = this.context.Recetas.FromSqlRaw(sql);
-            return await consulta.ToListAsync();
+            var consulta = await this.context.Recetas.ToListAsync();
+            return consulta;
+        }        
+        public async Task<int> CountRecetasAsync()
+        {
+            var consulta = this.context.Recetas.CountAsync();
+            return (int)consulta.Result;
         }
-        public async Task<Receta> FindRecetaById(int IdReceta)
+        public async Task<Receta> FindRecetaByIdAsync(int IdReceta)
         {
             string sql = "SELECT * FROM RECETA WHERE IDRECETA = @IDRECETA";
             SqlParameter pamId = new SqlParameter("@IDRECETA", IdReceta);
@@ -26,7 +30,7 @@ namespace CupMetric.Repositories
             Receta receta = consulta.AsEnumerable().FirstOrDefault();
             return receta;
         }
-        public async Task CreateReceta(Receta receta)
+        public async Task CreateRecetaAsync(Receta receta)
         {
             string sql = "INSERT INTO USUARIO VALUES (NULL, @NOMBRE, @INSTRUCCIONES, " +
                 "@IMAGEN, @IDCATEGORIA, @TIEMPO, 0)";
@@ -38,7 +42,7 @@ namespace CupMetric.Repositories
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre, pamInstrucciones,
                 pamImagen, pamIdCategoria, pamTiempo);
         }
-        public async Task UpdateReceta(Receta receta)
+        public async Task UpdateRecetaAsync(Receta receta)
         {
             string sql = "UPDATE RECETA SET NOMBRE= @NOMBRE, INSTRUCCIONES = @INSCRUCCIONES" +
                 ", IMAGEN = @IMAGEN, IDCATEGORIA = @IDCATEGORIA, TIEMPOPREPARACION = @TIEMPO," +
@@ -52,14 +56,14 @@ namespace CupMetric.Repositories
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre, pamInstrucciones,
                 pamImagen, pamIdCategoria, pamTiempo, pamId);
         }
-        public async Task DeleteReceta(int IdReceta)
+        public async Task DeleteRecetaAsync(int IdReceta)
         {
             string sql = "DELETE FROM RECETA WHERE IDRECETA = @IDRECETA";
             SqlParameter pamId = new SqlParameter("@IDRECETA", IdReceta);
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamId);
         }
 
-        public async Task<List<Receta>> FilterRecetaByCategoria(int IdCategoria)
+        public async Task<List<Receta>> FilterRecetaByCategoriaAsync(int IdCategoria)
         {
             string sql = "SELECT * FROM RECETA WHERE IDCATEGORIA=@IDCATEGORIA";
             SqlParameter pamId = new SqlParameter("@IDCATEGORIA", IdCategoria);
@@ -68,7 +72,7 @@ namespace CupMetric.Repositories
             return receta;
         }
         //Completar
-        public async Task<List<Receta>> FilterRecetaByIngrediente(int[] IdIngredientes)
+        public async Task<List<Receta>> FilterRecetaByIngredienteAsync(int[] IdIngredientes)
         {
             string sql = "SELECT * FROM RECETA";
             var consulta = new List<Receta>();

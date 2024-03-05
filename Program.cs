@@ -9,6 +9,9 @@ builder.Services.AddControllersWithViews();
 string connectionString = builder.Configuration.GetConnectionString("SqlServerUrl");
 
 builder.Services.AddTransient<RepositoryUsers>();
+builder.Services.AddTransient<RepositoryReceta>();
+builder.Services.AddTransient<RepositoryUtensilios>();
+builder.Services.AddTransient<RepositoryIngredientes>();
 
 builder.Services.AddDbContext<CupMetricContext>
     (options => options.UseSqlServer(connectionString));
