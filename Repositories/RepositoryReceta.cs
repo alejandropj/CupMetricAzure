@@ -22,13 +22,12 @@ namespace CupMetric.Repositories
             var consulta = this.context.Recetas.CountAsync();
             return (int)consulta.Result;
         }
-        public async Task<Receta> FindRecetaByIdAsync(int IdReceta)
+        public async Task<Receta> FindRecetaByIdAsync(int idReceta)
         {
-            string sql = "SELECT * FROM RECETA WHERE IDRECETA = @IDRECETA";
-            SqlParameter pamId = new SqlParameter("@IDRECETA", IdReceta);
-            var consulta = this.context.Recetas.FromSqlRaw(sql, pamId);
-            Receta receta = consulta.AsEnumerable().FirstOrDefault();
-            return receta;
+            var consulta = from datos in this.context.Recetas
+                           where datos.IdReceta == idReceta
+                           select datos;
+            return consulta.AsEnumerable().FirstOrDefault();
         }
         public async Task CreateRecetaAsync(Receta receta)
         {

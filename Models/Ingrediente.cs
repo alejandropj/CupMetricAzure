@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.SqlTypes;
 
 namespace CupMetric.Models
 {
@@ -10,16 +11,16 @@ namespace CupMetric.Models
         [Column("IdIngrediente")]
         public int IdIngrediente { get; set; }        
         [Column("Nombre")]
-        public string Nombre { get; set; }     
+        public string Nombre { get; set; }
         [Column("Densidad")]
-        public float Densidad { get; set; }     
+        public double? Densidad { get; set; }
         [Column("Imagen")]
-        public string Imagen { get; set; }     
+        public string? Imagen { get; set; }     
         [Column("Almacenamiento")]
         public string Almacenamiento { get; set; }     
         [Column("Sustitutivo")]
         public int Sustitutivo { get; set; }     
         [Column("Sinonimo")]
-        public string Sinonimo { get; set; }
+        public string? Sinonimo { get; set; }
     }
 }

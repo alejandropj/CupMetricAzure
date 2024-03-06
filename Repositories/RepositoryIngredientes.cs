@@ -12,21 +12,23 @@ namespace CupMetric.Repositories
         {
             this.context = context;
         }
-        public async Task<List<Ingrediente>> GetIngredientes()
+        public async Task<List<Ingrediente>> GetIngredientesAsync()
         {
-            string sql = "SELECT * FROM INGREDIENTE";
-            var consulta = this.context.Ingredientes.FromSqlRaw(sql);
-            return await consulta.ToListAsync();
-        }
-        public async Task<Ingrediente> FindIngredeinteById(int IdIngrediente)
+            List<Ingrediente> ingredientes = await this.context.Ingredientes.ToListAsync();
+            return ingredientes;
+        }        
+        public async Task<int> CountRecetasAsync()
         {
-            string sql = "SELECT * FROM INGREDIENTE WHERE IDINGREDIENTE = @IDINGREDIENTE";
-            SqlParameter pamId = new SqlParameter("@IDINGREDIENTE", IdIngrediente);
-            var consulta = this.context.Ingredientes.FromSqlRaw(sql, pamId);
-            Ingrediente ingrediente = consulta.AsEnumerable().FirstOrDefault();
-            return ingrediente;
+            return await this.context.Ingredientes.CountAsync();
         }
-        public async Task CreateIngrediente(Ingrediente ingrediente)
+        public async Task<Ingrediente> FindIngredienteByIdAsync(int idIngrediente)
+        {
+            var consulta = from datos in this.context.Ingredientes
+                           where datos.IdIngrediente == idIngrediente
+                           select datos;
+            return consulta.AsEnumerable().FirstOrDefault();
+        }
+        public async Task CreateIngredienteAsync(Ingrediente ingrediente)
         {
             string sql = "INSERT INTO INGREDIENTE VALUES (NULL, @NOMBRE, @DENSIDAD, @IMAGEN, @ALMACENAMIENTO, @SUSTITUTIVO, @SINONIMO)";
             SqlParameter pamNombre = new SqlParameter("@NOMBRE", ingrediente.Nombre);
@@ -39,7 +41,7 @@ namespace CupMetric.Repositories
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre, 
                 pamDensidad, pamImagen, pamAlmacenamiento, pamSustitutivo, pamSinonimo);
         }
-        public async Task UpdateUser(Ingrediente ingrediente)
+        public async Task UpdateIngredienteAsync(Ingrediente ingrediente)
         {
             string sql = "UPDATE INGREDIENTE SET NOMBRE=@NOMBRE, DENSIDAD= @DENSIDAD, " +
                 "IMAGEN=@IMAGEN, ALMACENAMIENTO = @ALMACENAMIENTO, SUSTITUTIVO= @SUSTITUTIVO, " +
@@ -54,7 +56,7 @@ namespace CupMetric.Repositories
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre,
                 pamDensidad, pamImagen, pamAlmacenamiento, pamSustitutivo, pamSinonimo);
         }
-        public async Task DeleteIngrediente(int idIngrediente)
+        public async Task DeleteIngredienteAsync(int idIngrediente)
         {
             string sql = "DELETE FROM INGREDIENTE WHERE IDINGREDIENTE = @IDINGREDIENTE";
             SqlParameter pamId = new SqlParameter("@IDINGREDIENTE", idIngrediente);
