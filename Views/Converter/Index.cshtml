@@ -14,7 +14,7 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
                 <div class="row px-5 py-3">
                     <div class="col-sm-12">
                         <div class="mb-4 align-items-center text-center">
-                            <select name="ingrediente" id="selectIngredientes" class="form-select form-select-lg text-center w-100 rounded-2" lang="es">
+                            <select name="ingrediente" id="selectIngredientes" class="form-select form-select-lg text-center w-100" lang="es">
                                 @foreach (Ingrediente ingr in ingredientes)
                                 {
                                     <option value="@ingr.IdIngrediente">@ingr.Nombre</option>
@@ -79,12 +79,13 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/js/select2.min.js"></script>
+
 @* <script src="~/js/es.js"></script> *@
 <script>
     $(document).ready(function () {
         //$.fn.select2.defaults.set('language', 'es');
         $('#selectIngredientes').select2({
-            theme: 'default',
+            theme: 'bootstrap-5',
             dropdownAutoWidth: true,
             selectOnClose: true
         });
