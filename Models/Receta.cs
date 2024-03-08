@@ -12,14 +12,16 @@ namespace CupMetric.Models
         [Column("NOMBRE")]
         public string Nombre { get; set; }
         [Column("INSTRUCCIONES")]
-        public string Instrucciones { get; set; }
+        public string? Instrucciones { get; set; }
         [Column("IMAGEN")]
-        public string Imagen { get; set; }
+        public string? Imagen { get; set; }
         [Column("IDCATEGORIA")]
         public int IdCategoria { get; set; }
         [Column("TIEMPOPREPARACION")]
         public int TiempoPreparacion { get; set; }
         [Column("VISITAS")]
-        public int Visitas { get; set; }
+        public int Visitas { get; set; }        
+        [Column("MEDIAVALORACIONES")]
+        public double? MediaValoraciones { get; set; }
     }
 }

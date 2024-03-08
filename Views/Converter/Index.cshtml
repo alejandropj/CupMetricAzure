@@ -62,13 +62,8 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
                 </div>
             </div>
         </div>
-
     }
 </div>
-
-
-
-
 
 
 <style>
@@ -77,17 +72,19 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
     }
 </style>
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/js/select2.min.js"></script>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/select2.min.js"></script>
 
-@* <script src="~/js/es.js"></script> *@
-<script>
-    $(document).ready(function () {
-        //$.fn.select2.defaults.set('language', 'es');
-        $('#selectIngredientes').select2({
-            theme: 'bootstrap-5',
-            dropdownAutoWidth: true,
-            selectOnClose: true
+    @* <script src="~/js/es.js"></script> *@
+    <script>
+        $(document).ready(function () {
+            //$.fn.select2.defaults.set('language', 'es');
+            $('#selectIngredientes').select2({
+                theme: 'bootstrap-5',
+                dropdownAutoWidth: true,
+                selectOnClose: true
+            });
         });
-    });
-</script>
+    </script>
+}

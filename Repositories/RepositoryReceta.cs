@@ -14,9 +14,59 @@ namespace CupMetric.Repositories
         }
         public async Task<List<Receta>> GetRecetasAsync()
         {
-            var consulta = await this.context.Recetas.ToListAsync();
-            return consulta;
-        }        
+            //var consulta = await this.context.Recetas.ToListAsync();
+            /*            var recetasConMediaValoraciones = await this.context.Recetas
+                            .Select(r => new Receta
+                            {
+                                // Copiamos todas las propiedades de Receta
+                                IdReceta = r.IdReceta,
+                                Nombre = r.Nombre,
+                                Instrucciones = r.Instrucciones,
+                                Imagen = r.Imagen,
+                                IdCategoria = r.IdCategoria,
+                                TiempoPreparacion = r.TiempoPreparacion,
+                                Visitas = r.Visitas,
+                                // Calculamos la media de las valoraciones para cada receta
+                                MediaValoraciones = this.context.Valoraciones
+                                    .Where(v => v.IdReceta == r.IdReceta)
+                                    .Select(v => v.NumValoracion)
+                                    .DefaultIfEmpty(0) // Manejamos el caso de que no haya valoraciones
+                                    .Average()
+                            })
+                            .ToListAsync();*/
+            var recetasConMediaValoraciones = await this.context.Recetas
+                            .GroupJoin(
+                                this.context.Valoraciones,
+                                r => r.IdReceta,
+                                v => v.IdReceta,
+                                (r, valoraciones) => new { Receta = r, Valoraciones = valoraciones }
+                            )
+                            .SelectMany(
+                                x => x.Valoraciones.DefaultIfEmpty(),
+                                (x, v) => new { x.Receta, Valoracion = v }
+                            )
+                            .GroupBy(
+                                x => x.Receta,
+                                x => x.Valoracion == null ? 0 : x.Valoracion.NumValoracion
+                            )
+                            .Select(
+                                g => new Receta
+                                {
+                                    // Copiamos todas las propiedades de Receta
+                                    IdReceta = g.Key.IdReceta,
+                                    Nombre = g.Key.Nombre,
+                                    Instrucciones = g.Key.Instrucciones,
+                                    Imagen = g.Key.Imagen,
+                                    IdCategoria = g.Key.IdCategoria,
+                                    TiempoPreparacion = g.Key.TiempoPreparacion,
+                                    Visitas = g.Key.Visitas,
+                                    // Calculamos la media de las valoraciones para cada receta
+                                    MediaValoraciones = g.Average()
+                                }
+                            )
+                            .ToListAsync();
+            return recetasConMediaValoraciones;
+        }
         public async Task<int> CountRecetasAsync()
         {
             var consulta = this.context.Recetas.CountAsync();
@@ -62,6 +112,12 @@ namespace CupMetric.Repositories
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamId);
         }
 
+        public async Task<List<Categoria>> GetCategoriasAsync()
+        {
+            var consulta = await this.context.Categorias.ToListAsync();
+            return consulta;
+        }
+
         public async Task<List<Receta>> FilterRecetaByCategoriaAsync(int IdCategoria)
         {
             string sql = "SELECT * FROM RECETA WHERE IDCATEGORIA=@IDCATEGORIA";
@@ -82,6 +138,20 @@ namespace CupMetric.Repositories
             }
 
             return consulta;
+        }
+
+        public async Task PostValoracionAsync(int idReceta, int idUsuario, int valoracion)
+        {
+            /*            string sql = "INSERT INTO VALORACIONES VALUES(NULL, @IDRECETA, @IDUSUARIO, @VALORACION";
+
+                        var consulta = new List<Receta>();
+                        foreach (var id in IdIngredientes)
+                        {
+                            var receta = await this.context.Recetas.FromSqlRaw(sql).Where(r => r.IdCategoria == id).ToListAsync();
+                            consulta.AddRange(receta);
+                        }
+
+                        return consulta;*/
         }
     }
 }
