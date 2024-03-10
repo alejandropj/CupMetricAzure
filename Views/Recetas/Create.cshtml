@@ -13,7 +13,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="View">
+        <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -47,7 +47,7 @@
                 <span asp-validation-for="TiempoPreparacion" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label for="Ingredientes" class="control-label">Ingredientes</label>
+                <label class="control-label">Ingredientes</label>
                 <select class="form-select" id="ingrediente">
                     @foreach (Ingrediente ingr in ingredientes)
                     {
@@ -66,6 +66,7 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Ingrediente</th>
                                 <th>Cantidad</th>
                                 <th></th>
@@ -78,7 +79,7 @@
                 </div>
             </div>
             <div class="form-group pt-5">
-                <input type="submit" value="Enviar" class="btn btn-outline-dark" />
+                <button type="submit" class="btn btn-outline-dark">Enviar</button>
             </div>
 
         </form>
@@ -95,20 +96,32 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        var contador = 0;
+        var ingredientesAgregados = [];
+
         function agregarIngrediente() {
             // Obtener valores de los campos
-            var ingrediente = document.getElementById("ingrediente").value;
+            var ingredienteId = document.getElementById("ingrediente").value;
             var nombreIngrediente = document.getElementById("ingrediente").options[document.getElementById("ingrediente").selectedIndex].text;
             var cantidad = document.getElementById("cantidad").value;
-            
-            if (cantidad > 0) {
+
+            // Verificar si el ingrediente ya ha sido agregado
+            if (ingredientesAgregados.includes(ingredienteId)) {
+                alert("¡El ingrediente ya ha sido agregado!");
+
+            } else if(cantidad>0){
                 // Agregar fila a la tabla
                 var fila = "<tr>" +
-                    "<td>" + nombreIngrediente + "</td>" +
-                    "<td>" + cantidad + "</td>" +
+                    "<td><input type='number' class='d-none' readonly name='dynamicInputId_" + contador + "' value='" + ingredienteId + "'/></td>" +
+                    "<td><input type='text' disabled name='dynamicNombre_" + contador + "' value='" + nombreIngrediente + "'/></td>" +
+                    "<td><input type='number' name='dynamicInputCantidad_" + contador + "' min=0 value='" + cantidad + "'/></td>" +
                     "<td><button type='button' class='btn btn-sm btn-danger' onclick='eliminarFila(this)'><i class='bi bi-x'></i></button></td>" +
                     "</tr>";
                 document.getElementById("tablaIngredientes").insertAdjacentHTML("beforeend", fila);
+
+                ingredientesAgregados.push(ingredienteId);
+
+                contador++;
 
                 // Limpiar campos
                 document.getElementById("cantidad").value = "";
@@ -118,8 +131,6 @@
         function eliminarFila(boton) {
             boton.closest("tr").remove();
         }
-
-
     </script>
 
 }

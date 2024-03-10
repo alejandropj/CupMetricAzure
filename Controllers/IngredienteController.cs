@@ -35,10 +35,11 @@ namespace CupMetric.Controllers
         // POST: IngredienteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Ingrediente ingrediente)
         {
             try
             {
+                this.repo.CreateIngredienteAsync(ingrediente);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -56,10 +57,11 @@ namespace CupMetric.Controllers
         // POST: IngredienteController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Ingrediente ingrediente)
         {
             try
             {
+                this.repo.UpdateIngredienteAsync(ingrediente);
                 return RedirectToAction(nameof(Index));
             }
             catch

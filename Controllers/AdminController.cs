@@ -19,14 +19,14 @@ namespace CupMetric.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            int conteo = await this.repositoryUsers.CountUsersAsync();
-            ViewData["CONTEOUSERS"] = conteo;
-/*            int conteo = await this.repositoryRecetas.CountRecetasAsync();
-            ViewData["CONTEORECETAS"] = conteo;            
-            int conteo = await this.repositoryUtensilios.CountUtensiliosAsync();
-            ViewData["CONTEOUSERS"] = conteo;            
-            int conteo = await this.repositoryIngredientes.CountIngredientsAsync();
-            ViewData["CONTEOUSERS"] = conteo;*/
+            int conteoUsers = await this.repositoryUsers.CountUsersAsync();
+            ViewData["CONTEOUSERS"] = conteoUsers;
+            int conteoRecetas = await this.repositoryRecetas.CountRecetasAsync();
+            ViewData["CONTEORECETAS"] = conteoRecetas;
+            int conteoUtensilios = await this.repositoryUtensilios.CountUtensiliosAsync();
+            ViewData["CONTEOUTENSILIOS"] = conteoUtensilios;
+            int conteoIngredientes = await this.repositoryIngredientes.CountIngredientesAsync();
+            ViewData["CONTEOINGREDIENTES"] = conteoIngredientes;
             return View();
         }
     }

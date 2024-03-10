@@ -17,7 +17,7 @@ namespace CupMetric.Repositories
             List<Ingrediente> ingredientes = await this.context.Ingredientes.ToListAsync();
             return ingredientes;
         }        
-        public async Task<int> CountRecetasAsync()
+        public async Task<int> CountIngredientesAsync()
         {
             return await this.context.Ingredientes.CountAsync();
         }
@@ -30,13 +30,13 @@ namespace CupMetric.Repositories
         }
         public async Task CreateIngredienteAsync(Ingrediente ingrediente)
         {
-            string sql = "INSERT INTO INGREDIENTE VALUES (NULL, @NOMBRE, @DENSIDAD, @IMAGEN, @ALMACENAMIENTO, @SUSTITUTIVO, @SINONIMO)";
+            string sql = "INSERT INTO INGREDIENTE VALUES (NULL, @NOMBRE, @DENSIDAD, @IMAGEN, @ALMACENAMIENTO, @SUSTITUTIVO, @Medible)";
             SqlParameter pamNombre = new SqlParameter("@NOMBRE", ingrediente.Nombre);
             SqlParameter pamDensidad = new SqlParameter("@DENSIDAD", ingrediente.Densidad);
             SqlParameter pamImagen = new SqlParameter("@IMAGEN", ingrediente.Imagen);
             SqlParameter pamAlmacenamiento = new SqlParameter("@ALMACENAMIENTO", ingrediente.Almacenamiento);
             SqlParameter pamSustitutivo = new SqlParameter("@SUSTITUTIVO", ingrediente.Sustitutivo);
-            SqlParameter pamSinonimo = new SqlParameter("@SINONIMO", ingrediente.Sinonimo);
+            SqlParameter pamSinonimo = new SqlParameter("@Medible", ingrediente.Medible);
 
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre, 
                 pamDensidad, pamImagen, pamAlmacenamiento, pamSustitutivo, pamSinonimo);
@@ -45,13 +45,13 @@ namespace CupMetric.Repositories
         {
             string sql = "UPDATE INGREDIENTE SET NOMBRE=@NOMBRE, DENSIDAD= @DENSIDAD, " +
                 "IMAGEN=@IMAGEN, ALMACENAMIENTO = @ALMACENAMIENTO, SUSTITUTIVO= @SUSTITUTIVO, " +
-                "SINONIMO = @SINONIMO)";
+                "Medible = @Medible)";
             SqlParameter pamNombre = new SqlParameter("@NOMBRE", ingrediente.Nombre);
             SqlParameter pamDensidad = new SqlParameter("@DENSIDAD", ingrediente.Densidad);
             SqlParameter pamImagen = new SqlParameter("@IMAGEN", ingrediente.Imagen);
             SqlParameter pamAlmacenamiento = new SqlParameter("@ALMACENAMIENTO", ingrediente.Almacenamiento);
             SqlParameter pamSustitutivo = new SqlParameter("@SUSTITUTIVO", ingrediente.Sustitutivo);
-            SqlParameter pamSinonimo = new SqlParameter("@SINONIMO", ingrediente.Sinonimo);
+            SqlParameter pamSinonimo = new SqlParameter("@Medible", ingrediente.Medible);
 
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre,
                 pamDensidad, pamImagen, pamAlmacenamiento, pamSustitutivo, pamSinonimo);

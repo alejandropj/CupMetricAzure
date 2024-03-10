@@ -17,10 +17,12 @@ namespace CupMetric.Models
         [Column("Imagen")]
         public string? Imagen { get; set; }     
         [Column("Almacenamiento")]
-        public string Almacenamiento { get; set; }     
+        public string? Almacenamiento { get; set; }     
         [Column("Sustitutivo")]
-        public int Sustitutivo { get; set; }     
-        [Column("Sinonimo")]
-        public string? Sinonimo { get; set; }
+        public int? Sustitutivo { get; set; }     
+        [Column("Medible")]
+        public bool Medible { get; set; }
+/*        // Propiedad de navegación para las relaciones con las recetas
+        public ICollection<IngredienteReceta> IngredientesReceta { get; set; }*/
     }
 }

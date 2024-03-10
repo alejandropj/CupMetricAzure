@@ -23,5 +23,8 @@ namespace CupMetric.Models
         public int Visitas { get; set; }        
         [Column("MEDIAVALORACIONES")]
         public double? MediaValoraciones { get; set; }
+
+/*        // Propiedad de navegación para las relaciones con los ingredientes
+        public List<Ingrediente> Ingredientes { get; set; }*/
     }
 }

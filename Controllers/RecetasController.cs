@@ -50,9 +50,23 @@ namespace CupMetric.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Receta receta)
+        public async Task<IActionResult> Create(Receta receta, IFormCollection form)
         {
-            await this.repo.CreateRecetaAsync(receta);
+            List<int> idIngredientes = new List<int>();
+            List<int> cantidades = new List<int>();
+            foreach (var key in form.Keys)
+            {
+                if (key.StartsWith("dynamicInputId_"))
+                {
+                    var index = int.Parse(key.Substring("dynamicInputId_".Length));
+                    idIngredientes.Add(int.Parse(form[key]));
+                    cantidades.Add(int.Parse(form["dynamicInputCantidad_" + index]));
+                }
+            }
+            //await this.repo.CreateRecetaAsync(receta);
+            receta.Visitas = 0;
+
+            Receta rec=new Receta();
             return RedirectToAction("List");
         }
         public async Task<IActionResult> Update(int idReceta)

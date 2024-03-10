@@ -14,5 +14,6 @@ namespace CupMetric.Data
         public DbSet<Utensilio> Utensilios { get; set; }
         public DbSet<Valoracion> Valoraciones { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<IngredienteReceta> IngredientesReceta { get; set; }
     }
 }

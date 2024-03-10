@@ -34,38 +34,94 @@ namespace CupMetric.Repositories
                                     .Average()
                             })
                             .ToListAsync();*/
-            var recetasConMediaValoraciones = await this.context.Recetas
-                            .GroupJoin(
-                                this.context.Valoraciones,
-                                r => r.IdReceta,
-                                v => v.IdReceta,
-                                (r, valoraciones) => new { Receta = r, Valoraciones = valoraciones }
-                            )
-                            .SelectMany(
-                                x => x.Valoraciones.DefaultIfEmpty(),
-                                (x, v) => new { x.Receta, Valoracion = v }
-                            )
-                            .GroupBy(
-                                x => x.Receta,
-                                x => x.Valoracion == null ? 0 : x.Valoracion.NumValoracion
-                            )
-                            .Select(
-                                g => new Receta
-                                {
-                                    // Copiamos todas las propiedades de Receta
-                                    IdReceta = g.Key.IdReceta,
-                                    Nombre = g.Key.Nombre,
-                                    Instrucciones = g.Key.Instrucciones,
-                                    Imagen = g.Key.Imagen,
-                                    IdCategoria = g.Key.IdCategoria,
-                                    TiempoPreparacion = g.Key.TiempoPreparacion,
-                                    Visitas = g.Key.Visitas,
-                                    // Calculamos la media de las valoraciones para cada receta
-                                    MediaValoraciones = g.Average()
-                                }
-                            )
-                            .ToListAsync();
-            return recetasConMediaValoraciones;
+            /*            var recetasConMediaValoraciones = await this.context.Recetas
+                                        .GroupJoin(
+                                            this.context.Valoraciones,
+                                            r => r.IdReceta,
+                                            v => v.IdReceta,
+                                            (r, valoraciones) => new { Receta = r, Valoraciones = valoraciones }
+                                        )
+                                        .SelectMany(
+                                            x => x.Valoraciones.DefaultIfEmpty(),
+                                            (x, v) => new { x.Receta, Valoracion = v }
+                                        )
+                                        .GroupBy(
+                                            x => x.Receta,
+                                            x => x.Valoracion == null ? 0 : x.Valoracion.NumValoracion
+                                        )
+                                        .Select(
+                                            g => new Receta
+                                            {
+                                                // Copiamos todas las propiedades de Receta
+                                                IdReceta = g.Key.IdReceta,
+                                                Nombre = g.Key.Nombre,
+                                                Instrucciones = g.Key.Instrucciones,
+                                                Imagen = g.Key.Imagen,
+                                                IdCategoria = g.Key.IdCategoria,
+                                                TiempoPreparacion = g.Key.TiempoPreparacion,
+                                                Visitas = g.Key.Visitas,
+                                                // Calculamos la media de las valoraciones para cada receta
+                                                MediaValoraciones = g.Average()
+                                            }
+                                        )
+                                        .ToListAsync();
+                        return recetasConMediaValoraciones;*/
+
+            var recetasValoraciones = await this.context.Recetas
+            .GroupJoin(
+                this.context.Valoraciones,
+                r => r.IdReceta,
+                v => v.IdReceta,
+                (r, valoraciones) => new { Receta = r, Valoraciones = valoraciones }
+            )
+            .SelectMany(
+                x => x.Valoraciones.DefaultIfEmpty(),
+                (x, v) => new { x.Receta, Valoracion = v }
+            )
+            .GroupBy(
+                x => x.Receta,
+                x => x.Valoracion == null ? 0 : x.Valoracion.NumValoracion
+            )
+            .Select(
+                g => new Receta
+                {
+                    // Copiamos todas las propiedades de Receta
+                    IdReceta = g.Key.IdReceta,
+                    Nombre = g.Key.Nombre,
+                    Instrucciones = g.Key.Instrucciones,
+                    Imagen = g.Key.Imagen,
+                    IdCategoria = g.Key.IdCategoria,
+                    TiempoPreparacion = g.Key.TiempoPreparacion,
+                    Visitas = g.Key.Visitas,
+                    // Calculamos la media de las valoraciones para cada receta
+                    MediaValoraciones = g.Average()
+                }
+            )
+            .ToListAsync();
+/*            foreach (var receta in recetasValoraciones)
+            {
+                receta.Ingredientes = new List<Ingrediente>();
+                var consulta = from datos in this.context.IngredientesReceta where datos.IdReceta == receta.IdReceta select datos;
+                consulta.ToListAsync();
+                
+                foreach(IngredienteReceta ingrRec in consulta)
+                {
+                    var consulta2 = from datos in this.context.Ingredientes
+                                       where datos.IdIngrediente == ingrRec.IdIngrediente
+                                       select datos;
+                    Ingrediente ingrediente = consulta2.AsEnumerable().FirstOrDefault();
+                    receta.Ingredientes.Add( ingrediente );
+
+                }
+            }*/
+/*            foreach (var receta in recetasValoraciones)
+            {
+                receta.IngredientesReceta = (ICollection<IngredienteReceta>)await this.context.IngredientesReceta
+                    .Where(ir => ir.IdReceta == receta.IdReceta)
+                    .Select(ir => ir.Ingrediente)
+                    .ToListAsync();
+            }*/
+            return recetasValoraciones;
         }
         public async Task<int> CountRecetasAsync()
         {
@@ -153,5 +209,19 @@ namespace CupMetric.Repositories
 
                         return consulta;*/
         }
+
+        public async Task<List<Ingrediente>> FindIngredientesbyReceta(int idReceta)
+        {
+/*            var consulta = from datos in this.context.IngredientesReceta
+                           where datos.IdReceta == idReceta
+                           select datos;*/
+
+            var ingredientes = from ingReceta in this.context.IngredientesReceta
+                                     join ingrediente in this.context.Ingredientes on ingReceta.IdIngrediente equals ingrediente.IdIngrediente
+                                     where ingReceta.IdReceta == idReceta
+                                     select ingrediente;
+
+            return await ingredientes.ToListAsync();
+        } 
     }
 }

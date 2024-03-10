@@ -1,10 +1,10 @@
-﻿@model IEnumerable<CupMetric.Models.Ingrediente>
+﻿@model IEnumerable<CupMetric.Models.Receta>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "List";
 }
 
-<h1>Index</h1>
+<h1>Recetas</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,25 +13,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.IdIngrediente)
+                @Html.DisplayNameFor(model => model.IdReceta)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Densidad)
+                @Html.DisplayNameFor(model => model.Instrucciones)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Imagen)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Almacenamiento)
+                @Html.DisplayNameFor(model => model.IdCategoria)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Sustitutivo)
+                @Html.DisplayNameFor(model => model.TiempoPreparacion)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Medible)
+                @Html.DisplayNameFor(model => model.Visitas)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MediaValoraciones)
             </th>
             <th></th>
         </tr>
@@ -40,25 +43,28 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.IdIngrediente)
+                @Html.DisplayFor(modelItem => item.IdReceta)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Densidad)
+                @Html.DisplayFor(modelItem => item.Instrucciones)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Imagen)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Almacenamiento)
+                @Html.DisplayFor(modelItem => item.IdCategoria)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Sustitutivo)
+                @Html.DisplayFor(modelItem => item.TiempoPreparacion)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.Medible)
+                @Html.DisplayFor(modelItem => item.Visitas)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MediaValoraciones)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
