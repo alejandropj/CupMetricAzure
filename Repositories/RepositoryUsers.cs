@@ -29,8 +29,9 @@ namespace CupMetric.Repositories
             }
             return null;
         }
-        public async Task RegisterUserAsync(string nombre, string email, string password)
+        public async Task<User> RegisterUserAsync(string nombre, string email, string password)
         {
+            
             User user = new User();
             user.IdUsuario = 0;
             user.Nombre = nombre;
@@ -38,9 +39,17 @@ namespace CupMetric.Repositories
             user.Salt = HelperTools.GenerateSalt();
             user.Password = HelperEncrypt.EncryptPassword(password, user.Salt);
             user.IdRol = 1;
-            this.context.Users.Add(user);
-            await this.context.SaveChangesAsync();
-            //return user;
+            if (this.Valid(user))
+            {
+                this.context.Users.Add(user);
+                await this.context.SaveChangesAsync();
+                return user;
+            }
+            return null;
+        }
+        public bool Valid(User user)
+        {
+            return true;
         }
 
         public async Task<List<User>> GetUsersAsync()

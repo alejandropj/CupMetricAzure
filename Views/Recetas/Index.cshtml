@@ -17,11 +17,15 @@
 @model List<Receta>
 @{
     int i = 0;
+    string usuario = Context.Session.GetString("USUARIO");
 }
-<div class="container mt-sm-2 mt-lg-5 col-xl-8 col-md-10 col-sm-12 bg-body rounded-3 bg-opacity-10 box-shadow">
+<div class="container mt-sm-2  col-xl-8 col-md-10 col-sm-12 bg-body rounded-3 bg-opacity-10 box-shadow">
+    @if (usuario != null){
     <div>
-        <a asp-action="Create" class="btn btn-outline-dark">Crear Receta (solo sesion)</a>
+    <a asp-action = "Create" class="btn btn-outline-dark">Crear Receta</a>
     </div>
+    }
+
     @*     <div class="row">
 
     <section class="py-5">

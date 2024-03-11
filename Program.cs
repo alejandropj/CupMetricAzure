@@ -12,6 +12,7 @@ builder.Services.AddTransient<RepositoryUsers>();
 builder.Services.AddTransient<RepositoryReceta>();
 builder.Services.AddTransient<RepositoryUtensilios>();
 builder.Services.AddTransient<RepositoryIngredientes>();
+builder.Services.AddSession();
 
 builder.Services.AddDbContext<CupMetricContext>
     (options => options.UseSqlServer(connectionString));
@@ -32,6 +33,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
