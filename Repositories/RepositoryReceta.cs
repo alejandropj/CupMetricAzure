@@ -2,126 +2,114 @@
 using CupMetric.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
+using System.Diagnostics.Metrics;
+using System.Runtime.Intrinsics.X86;
 
 namespace CupMetric.Repositories
 {
+    #region Procedimientos Almacenados
+/*  CREATE PROCEDURE SP_RECETA_VALORACION_INGREDIENTES
+    (@IDRECETA INT, @VALORACION INT OUT)
+    AS
+	    SELECT @VALORACION = ISNULL(AVG(VALORACION), 1) FROM VALORACIONES WHERE IDRECETA=@IDRECETA
+
+	    SELECT IR.IDINGREDIENTE, I.NOMBRE, IR.CANTIDAD
+        FROM INGREDIENTE_RECETA AS IR
+        INNER JOIN INGREDIENTE AS I ON IR.IDINGREDIENTE = I.IDINGREDIENTE
+        WHERE IR.IDRECETA = @IDRECETA;
+    GO*/
+    #endregion
     public class RepositoryReceta
     {
+        private SqlConnection cn;
+        private SqlCommand com;
+        private SqlDataReader reader;
+
         private CupMetricContext context;
         public RepositoryReceta(CupMetricContext context)
         {
+            string connectionString = @"Data Source=LOCALHOST\SQLEXPRESS;Initial Catalog=CUPMETRIC;Persist Security Info=True;User ID=sa;Password=MCSD2023;Trust Server Certificate=true";
+            this.cn = new SqlConnection(connectionString);
+            this.com = new SqlCommand();
+            this.com.Connection = this.cn;
             this.context = context;
         }
         public async Task<List<Receta>> GetRecetasAsync()
         {
-            //var consulta = await this.context.Recetas.ToListAsync();
-            /*            var recetasConMediaValoraciones = await this.context.Recetas
-                            .Select(r => new Receta
-                            {
-                                // Copiamos todas las propiedades de Receta
-                                IdReceta = r.IdReceta,
-                                Nombre = r.Nombre,
-                                Instrucciones = r.Instrucciones,
-                                Imagen = r.Imagen,
-                                IdCategoria = r.IdCategoria,
-                                TiempoPreparacion = r.TiempoPreparacion,
-                                Visitas = r.Visitas,
-                                // Calculamos la media de las valoraciones para cada receta
-                                MediaValoraciones = this.context.Valoraciones
-                                    .Where(v => v.IdReceta == r.IdReceta)
-                                    .Select(v => v.NumValoracion)
-                                    .DefaultIfEmpty(0) // Manejamos el caso de que no haya valoraciones
-                                    .Average()
-                            })
-                            .ToListAsync();*/
-            /*            var recetasConMediaValoraciones = await this.context.Recetas
-                                        .GroupJoin(
-                                            this.context.Valoraciones,
-                                            r => r.IdReceta,
-                                            v => v.IdReceta,
-                                            (r, valoraciones) => new { Receta = r, Valoraciones = valoraciones }
-                                        )
-                                        .SelectMany(
-                                            x => x.Valoraciones.DefaultIfEmpty(),
-                                            (x, v) => new { x.Receta, Valoracion = v }
-                                        )
-                                        .GroupBy(
-                                            x => x.Receta,
-                                            x => x.Valoracion == null ? 0 : x.Valoracion.NumValoracion
-                                        )
-                                        .Select(
-                                            g => new Receta
-                                            {
-                                                // Copiamos todas las propiedades de Receta
-                                                IdReceta = g.Key.IdReceta,
-                                                Nombre = g.Key.Nombre,
-                                                Instrucciones = g.Key.Instrucciones,
-                                                Imagen = g.Key.Imagen,
-                                                IdCategoria = g.Key.IdCategoria,
-                                                TiempoPreparacion = g.Key.TiempoPreparacion,
-                                                Visitas = g.Key.Visitas,
-                                                // Calculamos la media de las valoraciones para cada receta
-                                                MediaValoraciones = g.Average()
-                                            }
-                                        )
-                                        .ToListAsync();
-                        return recetasConMediaValoraciones;*/
-
-            var recetasValoraciones = await this.context.Recetas
-            .GroupJoin(
-                this.context.Valoraciones,
-                r => r.IdReceta,
-                v => v.IdReceta,
-                (r, valoraciones) => new { Receta = r, Valoraciones = valoraciones }
-            )
-            .SelectMany(
-                x => x.Valoraciones.DefaultIfEmpty(),
-                (x, v) => new { x.Receta, Valoracion = v }
-            )
-            .GroupBy(
-                x => x.Receta,
-                x => x.Valoracion == null ? 0 : x.Valoracion.NumValoracion
-            )
-            .Select(
-                g => new Receta
-                {
-                    // Copiamos todas las propiedades de Receta
-                    IdReceta = g.Key.IdReceta,
-                    Nombre = g.Key.Nombre,
-                    Instrucciones = g.Key.Instrucciones,
-                    Imagen = g.Key.Imagen,
-                    IdCategoria = g.Key.IdCategoria,
-                    TiempoPreparacion = g.Key.TiempoPreparacion,
-                    Visitas = g.Key.Visitas,
-                    // Calculamos la media de las valoraciones para cada receta
-                    MediaValoraciones = g.Average()
-                }
-            )
-            .ToListAsync();
-/*            foreach (var receta in recetasValoraciones)
+            var consulta = await this.context.Recetas.ToListAsync();
+            return consulta;
+        }
+        public async Task<List<RecetaIngredienteValoracion>> GetRecetasFormattedAsync()
+        {
+            var consulta = await this.context.Recetas.ToListAsync();
+            List<RecetaIngredienteValoracion> recetasFormateadas = new List<RecetaIngredienteValoracion>();
+            foreach (Receta rec in consulta)
             {
-                receta.Ingredientes = new List<Ingrediente>();
-                var consulta = from datos in this.context.IngredientesReceta where datos.IdReceta == receta.IdReceta select datos;
-                consulta.ToListAsync();
-                
-                foreach(IngredienteReceta ingrRec in consulta)
+                string sql = "SP_RECETA_VALORACION_INGREDIENTES";
+                this.com.Parameters.AddWithValue("@IDRECETA", rec.IdReceta);
+                SqlParameter pamValoracion = new SqlParameter("@VALORACION", 0);
+                pamValoracion.Direction = ParameterDirection.Output;
+                this.com.Parameters.Add(pamValoracion);
+                this.com.CommandType = CommandType.StoredProcedure;
+                this.com.CommandText = sql;
+                this.cn.Open();
+                this.reader = this.com.ExecuteReader();
+
+                RecetaIngredienteValoracion recetasForm = new RecetaIngredienteValoracion();
+                recetasForm.IdIngrediente = new List<int>();
+                recetasForm.NombreIngrediente = new List<string>();
+                while (this.reader.Read())
                 {
-                    var consulta2 = from datos in this.context.Ingredientes
-                                       where datos.IdIngrediente == ingrRec.IdIngrediente
-                                       select datos;
-                    Ingrediente ingrediente = consulta2.AsEnumerable().FirstOrDefault();
-                    receta.Ingredientes.Add( ingrediente );
+                    recetasForm.IdIngrediente.Add(int.Parse(this.reader["IDINGREDIENTE"].ToString()));
+                    recetasForm.NombreIngrediente.Add(this.reader["NOMBRE"].ToString());
 
                 }
-            }*/
-/*            foreach (var receta in recetasValoraciones)
+                this.reader.Close();
+                recetasForm.Valoracion = int.Parse(pamValoracion.Value.ToString());
+                recetasForm.Receta = rec;
+                this.com.Parameters.Clear();
+                this.cn.Close();
+                recetasFormateadas.Add(recetasForm);
+
+            }
+            return recetasFormateadas;
+        }
+        public async Task<RecetaIngredienteValoracion> FindRecetaFormattedAsync(int idReceta)
+        {
+            string sql = "SP_RECETA_VALORACION_INGREDIENTES";
+            this.com.Parameters.AddWithValue("@IDRECETA", idReceta);
+            SqlParameter pamValoracion = new SqlParameter("@VALORACION", 0);
+            pamValoracion.Direction = ParameterDirection.Output;
+            this.com.Parameters.Add(pamValoracion);
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = sql;
+            this.cn.Open();
+            this.reader = this.com.ExecuteReader();
+
+            RecetaIngredienteValoracion recetaForm = new RecetaIngredienteValoracion();
+            recetaForm.IdIngrediente = new List<int>();
+            recetaForm.NombreIngrediente = new List<string>();
+            recetaForm.Cantidad = new List<int>();
+            while (this.reader.Read())
             {
-                receta.IngredientesReceta = (ICollection<IngredienteReceta>)await this.context.IngredientesReceta
-                    .Where(ir => ir.IdReceta == receta.IdReceta)
-                    .Select(ir => ir.Ingrediente)
-                    .ToListAsync();
-            }*/
-            return recetasValoraciones;
+                recetaForm.IdIngrediente.Add(int.Parse(this.reader["IDINGREDIENTE"].ToString()));
+                recetaForm.NombreIngrediente.Add(this.reader["NOMBRE"].ToString());
+                recetaForm.Cantidad.Add(int.Parse(this.reader["CANTIDAD"].ToString()));
+
+            }
+            this.reader.Close();
+            recetaForm.Valoracion = int.Parse(pamValoracion.Value.ToString());
+            var consulta = from datos in this.context.Recetas
+                           where datos.IdReceta == idReceta
+                           select datos;
+            recetaForm.Receta = consulta.AsEnumerable().FirstOrDefault();
+
+            this.com.Parameters.Clear();
+            this.cn.Close();
+
+
+            return recetaForm;
         }
         public async Task<int> CountRecetasAsync()
         {
@@ -212,16 +200,16 @@ namespace CupMetric.Repositories
 
         public async Task<List<Ingrediente>> FindIngredientesbyReceta(int idReceta)
         {
-/*            var consulta = from datos in this.context.IngredientesReceta
-                           where datos.IdReceta == idReceta
-                           select datos;*/
+            /*            var consulta = from datos in this.context.IngredientesReceta
+                                       where datos.IdReceta == idReceta
+                                       select datos;*/
 
             var ingredientes = from ingReceta in this.context.IngredientesReceta
-                                     join ingrediente in this.context.Ingredientes on ingReceta.IdIngrediente equals ingrediente.IdIngrediente
-                                     where ingReceta.IdReceta == idReceta
-                                     select ingrediente;
+                               join ingrediente in this.context.Ingredientes on ingReceta.IdIngrediente equals ingrediente.IdIngrediente
+                               where ingReceta.IdReceta == idReceta
+                               select ingrediente;
 
             return await ingredientes.ToListAsync();
-        } 
+        }
     }
 }

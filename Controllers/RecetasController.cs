@@ -15,12 +15,12 @@ namespace CupMetric.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            List<Receta> recetas = await this.repo.GetRecetasAsync();
+            List<RecetaIngredienteValoracion> recetas = await this.repo.GetRecetasFormattedAsync();
             return View(recetas);
         }
         public async Task<IActionResult> Receta(int idreceta)
         {
-            Receta receta = await this.repo.FindRecetaByIdAsync(idreceta);
+            RecetaIngredienteValoracion receta = await this.repo.FindRecetaFormattedAsync(idreceta);
             return View(receta);
         }
         [HttpPost]
