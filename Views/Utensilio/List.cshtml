@@ -1,0 +1,59 @@
+﻿@model IEnumerable<CupMetric.Models.Utensilio>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1 class="text-center">Utensilios</h1>
+
+<p>
+    <a asp-action="Create">Crear</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdUtensilio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Volumen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Imagen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recomendacion)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdUtensilio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Volumen)
+            </td>
+            <td>
+                <img src="~/images/tools/@item.Imagen" style="width:100px"/>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Recomendacion)
+            </td>
+            <td>
+                @Html.ActionLink("Modificar", "Update", new {  idUtensilio=@item.IdUtensilio }) |
+                    @Html.ActionLink("Detalles", "Details", new { idUtensilio = @item.IdUtensilio }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { idUtensilio = @item.IdUtensilio })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

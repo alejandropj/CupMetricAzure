@@ -6,23 +6,23 @@
     var ingredientes = ViewData["INGREDIENTES"] as List<Ingrediente>;
 }
 
-<div class="container pt-4">
-<h1>Crear Receta</h1>
+<div class="container pt-4 bg-dark bg-opacity-10 p-5">
+<h1 class="text-center">Crear Receta</h1>
 
 <h4 class="text-danger">Inserte los campos obligatorios</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div >
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
+                <input asp-for="Nombre" class="form-control" placeholder="Nombre de la receta"/>
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Instrucciones" class="control-label"></label>
-                <textarea asp-for="Instrucciones" class="form-control" placeholder="Coloque los pasos"></textarea>
+                <textarea asp-for="Instrucciones" class="form-control" placeholder="Pasos sin numeración, separadados por puntos"></textarea>
                 <span asp-validation-for="Instrucciones" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -41,9 +41,8 @@
                 <span asp-validation-for="IdCategoria" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TiempoPreparacion" class="control-label">Tiempo de preparación
-                    (en minutos)</label>
-                <input asp-for="TiempoPreparacion" class="form-control" />
+                <label asp-for="TiempoPreparacion" class="control-label">Tiempo de preparación</label>
+                <input asp-for="TiempoPreparacion" class="form-control" placeholder="Tiempo en minutos" min=0 />
                 <span asp-validation-for="TiempoPreparacion" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -57,13 +56,17 @@
 
             </div>
             <div class="form-group">
-                <label for="cantidad">Cantidad (en gramos)</label>
-                <input type="number" class="form-control" id="cantidad" placeholder="Ingrese la cantidad" min="0">
+                <label for="cantidad">Cantidad</label>
+                <input type="number" class="form-control" id="cantidad" placeholder="Ingrese la cantidad en gramos o unidades" min="0">
+                    <button type="button" class="btn btn-sm btn-outline-dark" onclick="agregarIngrediente()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+                        </svg> Añadir a la lista
+                    </button>
+
             </div>
-            <button type="button" class="btn btn-primary" onclick="agregarIngrediente()">Agregar</button>
             <div class="row mt-4">
-                <div class="col-md-6">
-                    <table class="table">
+                    <table class="table table-primary table-borderless w-100">
                         <thead>
                             <tr>
                                 <th></th>
@@ -76,10 +79,9 @@
                             <!-- Aquí se agregarán las filas dinámicamente -->
                         </tbody>
                     </table>
-                </div>
             </div>
-            <div class="form-group pt-5">
-                <button type="submit" class="btn btn-outline-dark">Enviar</button>
+            <div class="form-group pt-3 text-center">
+                <button type="submit" class="btn btn-lg btn-dark">Enviar</button>
             </div>
 
         </form>

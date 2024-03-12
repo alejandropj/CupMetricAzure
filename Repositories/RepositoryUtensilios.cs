@@ -1,5 +1,6 @@
 ﻿using CupMetric.Data;
 using CupMetric.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace CupMetric.Repositories
@@ -26,6 +27,35 @@ namespace CupMetric.Repositories
                            where datos.IdUtensilio == idUtensilio
                            select datos;
             return consulta.AsEnumerable().FirstOrDefault();
+        }
+        public async Task CreateUtensilioAsync(Utensilio utensilio)
+        {
+            string sql = "INSERT INTO UTENSILIO VALUES (NULL, @NOMBRE, @VOLUMEN, @IMAGEN, @RECOMENDACION)";
+            SqlParameter pamNombre = new SqlParameter("@NOMBRE", utensilio.Nombre);
+            SqlParameter pamVolumen = new SqlParameter("@VOLUMEN", utensilio.Volumen);
+            SqlParameter pamImagen = new SqlParameter("@IMAGEN", utensilio.Imagen);
+            SqlParameter pamRecomendacion = new SqlParameter("@RECOMENDACION", utensilio.Recomendacion);
+
+            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre,
+                pamVolumen, pamImagen, pamRecomendacion);
+        }
+        public async Task UpdateUtensilioAsync(Utensilio utensilio)
+        {
+            string sql = "UPDATE UTENSILIO SET NOMBRE=@NOMBRE, VOLUMEN= @VOLUMEN, " +
+                "IMAGEN=@IMAGEN, RECOMENDACION = @RECOMENDACION";
+            SqlParameter pamNombre = new SqlParameter("@NOMBRE", utensilio.Nombre);
+            SqlParameter pamVolumen = new SqlParameter("@VOLUMEN", utensilio.Volumen);
+            SqlParameter pamImagen = new SqlParameter("@IMAGEN", utensilio.Imagen);
+            SqlParameter pamRecomendacion = new SqlParameter("@RECOMENDACION", utensilio.Recomendacion);
+
+            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre,
+                pamVolumen, pamImagen, pamRecomendacion);
+        }
+        public async Task DeleteUtensilioAsync(int idUtensilio)
+        {
+            string sql = "DELETE FROM UTENSILIO WHERE IDUTENSILIO = @ID";
+            SqlParameter pamId = new SqlParameter("@ID", idUtensilio);
+            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamId);
         }
     }
 }

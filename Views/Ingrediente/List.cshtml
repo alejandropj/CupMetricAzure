@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Ingredientes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Crear nuevo</a>
 </p>
 <table class="table">
     <thead>
@@ -61,9 +61,9 @@
                     @Html.DisplayFor(modelItem => item.Medible)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Actualizar", "Update", new { idIngrediente=item.IdIngrediente }) |
+                    @Html.ActionLink("Details", "Details", new { idIngrediente = item.IdIngrediente }) |
+                    @Html.ActionLink("Delete", "Delete", new { idIngrediente = item.IdIngrediente })
             </td>
         </tr>
 }

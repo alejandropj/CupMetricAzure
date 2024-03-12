@@ -13,7 +13,7 @@ namespace CupMetric.Controllers
             this.repo = repo;
         }
         // GET: IngredienteController
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> List()
         {
             List<Ingrediente> ingredientes = await this.repo.GetIngredientesAsync();
             return View(ingredientes);
@@ -35,12 +35,12 @@ namespace CupMetric.Controllers
         // POST: IngredienteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Ingrediente ingrediente)
+        public async Task<ActionResult> Create(Ingrediente ingrediente)
         {
             try
             {
-                this.repo.CreateIngredienteAsync(ingrediente);
-                return RedirectToAction(nameof(Index));
+                await this.repo.CreateIngredienteAsync(ingrediente);
+                return RedirectToAction("List");
             }
             catch
             {
@@ -48,21 +48,21 @@ namespace CupMetric.Controllers
             }
         }
 
-        // GET: IngredienteController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Update(int idingrediente)
         {
-            return View();
+            Ingrediente ingrediente = await this.repo.FindIngredienteByIdAsync(idingrediente);
+            return View(ingrediente);
         }
 
         // POST: IngredienteController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Ingrediente ingrediente)
+        public async Task<ActionResult> Update(Ingrediente ingrediente)
         {
             try
             {
-                this.repo.UpdateIngredienteAsync(ingrediente);
-                return RedirectToAction(nameof(Index));
+                await this.repo.UpdateIngredienteAsync(ingrediente);
+                return RedirectToAction("List");
             }
             catch
             {
@@ -71,24 +71,10 @@ namespace CupMetric.Controllers
         }
 
         // GET: IngredienteController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int idingrediente)
         {
+            this.repo.DeleteIngredienteAsync(idingrediente);
             return View();
-        }
-
-        // POST: IngredienteController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

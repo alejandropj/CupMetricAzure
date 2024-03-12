@@ -12,7 +12,7 @@ namespace CupMetric.Models
         [Column("Nombre")]
         public string Nombre { get; set; }
         [Column("Volumen")]
-        public float Volumen { get; set; }
+        public double Volumen { get; set; }
         [Column("Imagen")]
         public string Imagen { get; set; }
         [Column("Recomendacion")]

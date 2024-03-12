@@ -45,7 +45,7 @@ namespace CupMetric.Repositories
         {
             string sql = "UPDATE INGREDIENTE SET NOMBRE=@NOMBRE, DENSIDAD= @DENSIDAD, " +
                 "IMAGEN=@IMAGEN, ALMACENAMIENTO = @ALMACENAMIENTO, SUSTITUTIVO= @SUSTITUTIVO, " +
-                "Medible = @Medible)";
+                "Medible = @Medible";
             SqlParameter pamNombre = new SqlParameter("@NOMBRE", ingrediente.Nombre);
             SqlParameter pamDensidad = new SqlParameter("@DENSIDAD", ingrediente.Densidad);
             SqlParameter pamImagen = new SqlParameter("@IMAGEN", ingrediente.Imagen);
