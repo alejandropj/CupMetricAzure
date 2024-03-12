@@ -16,6 +16,13 @@ namespace CupMetric.Repositories
         {
             List<Ingrediente> ingredientes = await this.context.Ingredientes.ToListAsync();
             return ingredientes;
+        }             
+        public async Task<List<Ingrediente>> GetIngredientesMediblesAsync()
+        {
+            var consulta = from datos in this.context.Ingredientes 
+                           where datos.Medible==true select datos;
+            List < Ingrediente > ingredientes = await consulta.ToListAsync();
+            return ingredientes;
         }        
         public async Task<int> CountIngredientesAsync()
         {

@@ -21,6 +21,7 @@ namespace CupMetric.Controllers
         public async Task<IActionResult> Receta(int idreceta)
         {
             RecetaIngredienteValoracion receta = await this.repo.FindRecetaFormattedAsync(idreceta);
+            await this.repo.AddVisitRecetaAsync(idreceta);
             return View(receta);
         }
         [HttpPost]

@@ -32,11 +32,11 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
                     </div>
                     <div class="col-sm-12 col-md-4">
                         <div class="form-outline mb-4 align-items-center text-center" data-mdb-input-init>
-                            <select class="form-select-lg transparent-select w-100 rounded-2" id="formUnidad">
-                                <option>gramos</option>
-                                <option>mililitros</option>
-                                <option>kilos</option>
-                                <option>litros</option>
+                            <select class="form-select-lg transparent-select w-100 rounded-2" name="unidad" id="formUnidad">
+                                <option value="1">gramos</option>
+                                <option value="2">mililitros</option>
+                                <option value="3">kilos</option>
+                                <option value="4">litros</option>
                             </select>
                             <label class="form-label" for="formUnidad">Unidad</label>
                         </div>
@@ -48,17 +48,24 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
             </div>
         </form>
     </div>
-    @if (Model != null)
+    @if (ViewData["UTENSILIOS"] != null)
     {
+        var utensilios = ViewData["UTENSILIOS"] as List<Utensilio>;
+
         <hr />
-        <div class="row py-5 px-4">
+        <div class="row px-4">
             <div class="col-12">
-                <h1>Medidas</h1>
-                <div class="col-12">
+                <h1 class="text-center">Medidas</h1>
+                <div class="row">
+                    @foreach(Utensilio utensilio in utensilios)
+                    {
                     <div class="col-6 col-sm-4 col-md-3 text-center">
-                        <img src="..." class="img-fluid" style="width:100px;height:100px" />
-                        <h4>Cuchara x 1</h4>
+                        <img src="~/images/tools/@utensilio.Imagen" class="img-fluid" style="width:100px;height:100px" />
+                        <h4>@utensilio.Nombre</h4>
+                        <p class="text-primary fs-6">*Medida aproximada: @utensilio.Volumen ml</p>
                     </div>
+
+                    }
                 </div>
             </div>
         </div>

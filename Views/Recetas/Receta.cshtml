@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Receta";
+    string usuario = Context.Session.GetString("USUARIO");
 }
+
 <style>
     .star {
         width: 30px;
@@ -46,7 +48,7 @@
                 @for(int i = 0; i< Model.NombreIngrediente.Count; i++)
                 {
                     <li class="list-group-item">
-                        @Model.NombreIngrediente[i] - @Model.Cantidad[i]
+                        @Model.NombreIngrediente[i] - @Model.Cantidad[i] @if(Model.Medible[i]==true){ <span>gramos</span> }
                     </li>
                 }
                 
@@ -59,7 +61,9 @@
                 }
             </ul> *@
             <!--COMPROBAR SI YA EXISTE VALORACION-->
-            <hr class="my-3"/>
+            @if(usuario != null)
+            {
+            <hr class="my-3" />
             <form method="post">
                 <div class="form-group">
                     <label for="valoracion">Deja tu valoración:</label>
@@ -76,6 +80,8 @@
                 </div>
                 <h1>@ViewData["MENSAJE"]</h1>
             </form>
+
+            }
         </div>
     </div>
 </div>

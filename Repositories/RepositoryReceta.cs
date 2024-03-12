@@ -14,7 +14,7 @@ namespace CupMetric.Repositories
     AS
 	    SELECT @VALORACION = ISNULL(AVG(VALORACION), 1) FROM VALORACIONES WHERE IDRECETA=@IDRECETA
 
-	    SELECT IR.IDINGREDIENTE, I.NOMBRE, IR.CANTIDAD
+	    SELECT IR.IDINGREDIENTE, I.NOMBRE, IR.CANTIDAD, I.MEDIBLE
         FROM INGREDIENTE_RECETA AS IR
         INNER JOIN INGREDIENTE AS I ON IR.IDINGREDIENTE = I.IDINGREDIENTE
         WHERE IR.IDRECETA = @IDRECETA;
@@ -77,6 +77,7 @@ namespace CupMetric.Repositories
         }
         public async Task<RecetaIngredienteValoracion> FindRecetaFormattedAsync(int idReceta)
         {
+            
             string sql = "SP_RECETA_VALORACION_INGREDIENTES";
             this.com.Parameters.AddWithValue("@IDRECETA", idReceta);
             SqlParameter pamValoracion = new SqlParameter("@VALORACION", 0);
@@ -91,11 +92,13 @@ namespace CupMetric.Repositories
             recetaForm.IdIngrediente = new List<int>();
             recetaForm.NombreIngrediente = new List<string>();
             recetaForm.Cantidad = new List<int>();
+            recetaForm.Medible = new List<bool>();
             while (this.reader.Read())
             {
                 recetaForm.IdIngrediente.Add(int.Parse(this.reader["IDINGREDIENTE"].ToString()));
                 recetaForm.NombreIngrediente.Add(this.reader["NOMBRE"].ToString());
                 recetaForm.Cantidad.Add(int.Parse(this.reader["CANTIDAD"].ToString()));
+                recetaForm.Medible.Add(bool.Parse(this.reader["MEDIBLE"].ToString()));
 
             }
             this.reader.Close();
@@ -153,6 +156,12 @@ namespace CupMetric.Repositories
         {
             string sql = "DELETE FROM RECETA WHERE IDRECETA = @IDRECETA";
             SqlParameter pamId = new SqlParameter("@IDRECETA", IdReceta);
+            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamId);
+        }
+        public async Task AddVisitRecetaAsync(int idReceta)
+        {
+            string sql = "UPDATE RECETA SET VISITAS=VISITAS+1 WHERE IDRECETA = @IDRECETA";
+            SqlParameter pamId = new SqlParameter("@IDRECETA", idReceta);
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamId);
         }
 
