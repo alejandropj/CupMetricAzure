@@ -126,10 +126,10 @@ namespace CupMetric.Repositories
                            select datos;
             return consulta.AsEnumerable().FirstOrDefault();
         }
-        public async Task CreateRecetaAsync(Receta receta)
+        public async Task CreateRecetaAsync(Receta receta, List<int> idingredientes, List<double> cantidades)
         {
-            string sql = "INSERT INTO USUARIO VALUES (NULL, @NOMBRE, @INSTRUCCIONES, " +
-                "@IMAGEN, @IDCATEGORIA, @TIEMPO, 0)";
+            string sql = "INSERT INTO RECETA VALUES (@NOMBRE, @INSTRUCCIONES, " +
+                "@IMAGEN, @IDCATEGORIA, @TIEMPO, 0, NULL)";
             SqlParameter pamNombre = new SqlParameter("@NOMBRE", receta.Nombre);
             SqlParameter pamInstrucciones = new SqlParameter("@INSTRUCCIONES", receta.Instrucciones);
             SqlParameter pamImagen = new SqlParameter("@IMAGEN", receta.Imagen);
@@ -137,6 +137,23 @@ namespace CupMetric.Repositories
             SqlParameter pamTiempo = new SqlParameter("@TIEMPO", receta.TiempoPreparacion);
             int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre, pamInstrucciones,
                 pamImagen, pamIdCategoria, pamTiempo);
+            int nuevoId = await this.context.Recetas
+            .OrderByDescending(r => r.IdReceta)
+            .Select(r => r.IdReceta)
+            .FirstOrDefaultAsync();
+            if(idingredientes.Count != 0)
+            {
+                for(int i=0; i < idingredientes.Count; i++)
+                {
+                    string sqlNew = "INSERT INTO INGREDIENTE_RECETA VALUES (@IDRECETA, @IDINGREDIENTE, @CANTIDAD)";
+                    SqlParameter pamIdReceta = new SqlParameter("@IDRECETA", nuevoId);
+                    SqlParameter pamIdIngrediente = new SqlParameter("@IDINGREDIENTE", idingredientes[i]);
+                    SqlParameter pamCantidad = new SqlParameter("@CANTIDAD", cantidades[i]);
+                    int afNew = await this.context.Database.ExecuteSqlRawAsync(sqlNew, pamIdReceta, pamIdIngrediente, pamCantidad);
+
+                }
+            }
+            string hola = "";
         }
         public async Task UpdateRecetaAsync(Receta receta)
         {
