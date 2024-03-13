@@ -27,11 +27,19 @@ namespace CupMetric.Controllers
         [HttpPost]
         public async Task<IActionResult> Receta(int idreceta, int valoracion)
         {
-            //Post receta await this.repo.GetRecetasAsync();
-            ViewData["MENSAJE"] = "Gracias por tu valoración "+valoracion;
-            Receta receta = await this.repo.FindRecetaByIdAsync(idreceta);
+            int idUsuario = 0;
+            bool exists = await this.repo.PostValoracionAsync(idreceta, idUsuario ,valoracion);
+            if (exists)
+            {
+                ViewData["MENSAJE"] = "Ya has valorado esta receta";
+            }
+            ViewData["MENSAJE"] = "Gracias por tu valoración.";
+
+            //Carga
+            RecetaIngredienteValoracion receta = await this.repo.FindRecetaFormattedAsync(idreceta);
             return View(receta);
         }
+        //Admin
         public async Task<IActionResult> List()
         {
             List<Receta> recetas = await this.repo.GetRecetasAsync();

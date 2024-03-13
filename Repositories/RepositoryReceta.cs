@@ -193,18 +193,25 @@ namespace CupMetric.Repositories
             return consulta;
         }
 
-        public async Task PostValoracionAsync(int idReceta, int idUsuario, int valoracion)
+        public async Task<bool> PostValoracionAsync(int idReceta, int idUsuario, int valoracion)
         {
-            /*            string sql = "INSERT INTO VALORACIONES VALUES(NULL, @IDRECETA, @IDUSUARIO, @VALORACION";
-
-                        var consulta = new List<Receta>();
-                        foreach (var id in IdIngredientes)
-                        {
-                            var receta = await this.context.Recetas.FromSqlRaw(sql).Where(r => r.IdCategoria == id).ToListAsync();
-                            consulta.AddRange(receta);
-                        }
-
-                        return consulta;*/
+            //string sql = "SELECT IDVALORACION FROM VALORACIONES WHERE IDRECETA=@IDRECETA AND IDUSUARIO=@IDUSUARIO";
+            var consulta = from datos in this.context.Valoraciones
+                           where datos.IdReceta == idReceta && datos.IdUsuario== idUsuario
+                           select datos.IdValoracion;
+            if (consulta == null)
+            {
+                string sql = "INSERT INTO VALORACIONES VALUES(NULL, @IDRECETA, @IDUSUARIO, @VALORACION)";
+                SqlParameter pamIdReceta = new SqlParameter("@IDRECETA", idReceta);
+                SqlParameter pamIdUsuario = new SqlParameter("@IDUSUARIO", idUsuario);
+                int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamIdReceta, pamIdUsuario);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+      
         }
 
         public async Task<List<Ingrediente>> FindIngredientesbyReceta(int idReceta)
