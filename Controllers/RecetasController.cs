@@ -62,20 +62,19 @@ namespace CupMetric.Controllers
         public async Task<IActionResult> Create(Receta receta, IFormCollection form)
         {
             List<int> idIngredientes = new List<int>();
-            List<int> cantidades = new List<int>();
+            List<double> cantidades = new List<double>();
             foreach (var key in form.Keys)
             {
                 if (key.StartsWith("dynamicInputId_"))
                 {
                     var index = int.Parse(key.Substring("dynamicInputId_".Length));
                     idIngredientes.Add(int.Parse(form[key]));
-                    cantidades.Add(int.Parse(form["dynamicInputCantidad_" + index]));
+                    cantidades.Add(double.Parse(form["dynamicInputCantidad_" + index]));
                 }
             }
-            //await this.repo.CreateRecetaAsync(receta);
             receta.Visitas = 0;
 
-            Receta rec=new Receta();
+            await this.repo.CreateRecetaAsync(receta, idIngredientes, cantidades);
             return RedirectToAction("List");
         }
         public async Task<IActionResult> Update(int idReceta)

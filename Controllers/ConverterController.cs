@@ -69,7 +69,7 @@ namespace CupMetric.Controllers
                     }
                 }
                     //Si aún queda volumen por cubrir
-                    if (volumen > 0)
+/*                    if (volumen > 0)
                 {
                     foreach (var utensilio in utensiliosOrdenados)
                     {
@@ -82,7 +82,7 @@ namespace CupMetric.Controllers
                             }
                         }
                     }
-                }
+                }*/
 
                 if(utensiliosSeleccionados.Count!= 0)
                 {
