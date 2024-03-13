@@ -1,5 +1,6 @@
 ﻿using CupMetric.Models;
 using CupMetric.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CupMetric.Controllers
@@ -16,6 +17,7 @@ namespace CupMetric.Controllers
         public async Task<IActionResult> Index()
         {
             List<RecetaIngredienteValoracion> recetas = await this.repo.GetRecetasFormattedAsync();
+            ViewData["CATEGORIAS"] = await this.repo.GetCategoriasAsync();
             return View(recetas);
         }
         public async Task<IActionResult> Receta(int idreceta)
@@ -27,13 +29,16 @@ namespace CupMetric.Controllers
         [HttpPost]
         public async Task<IActionResult> Receta(int idreceta, int valoracion)
         {
-            int idUsuario = 0;
+            int idUsuario = int.Parse(HttpContext.Session.GetString("IDUSUARIO"));
             bool exists = await this.repo.PostValoracionAsync(idreceta, idUsuario ,valoracion);
             if (exists)
             {
                 ViewData["MENSAJE"] = "Ya has valorado esta receta";
             }
-            ViewData["MENSAJE"] = "Gracias por tu valoración.";
+            else
+            {
+                ViewData["MENSAJE"] = "Gracias por tu valoración.";
+            }
 
             //Carga
             RecetaIngredienteValoracion receta = await this.repo.FindRecetaFormattedAsync(idreceta);

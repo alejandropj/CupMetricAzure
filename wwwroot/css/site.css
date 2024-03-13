@@ -146,3 +146,7 @@ select.transparent-select {
 .select2-results__option--highlighted {
     background: #2D2D2D !important;
 }
+
+.btn-group input[type="radio"] {
+    display: none;
+}

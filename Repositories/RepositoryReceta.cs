@@ -197,7 +197,7 @@ namespace CupMetric.Repositories
             return receta;
         }
         //Completar
-        public async Task<List<Receta>> FilterRecetaByIngredienteAsync(int[] IdIngredientes)
+/*        public async Task<List<Receta>> FilterRecetaByIngredienteAsync(int[] IdIngredientes)
         {
             string sql = "SELECT * FROM RECETA";
             var consulta = new List<Receta>();
@@ -208,7 +208,7 @@ namespace CupMetric.Repositories
             }
 
             return consulta;
-        }
+        }*/
 
         public async Task<bool> PostValoracionAsync(int idReceta, int idUsuario, int valoracion)
         {
@@ -216,12 +216,14 @@ namespace CupMetric.Repositories
             var consulta = from datos in this.context.Valoraciones
                            where datos.IdReceta == idReceta && datos.IdUsuario== idUsuario
                            select datos.IdValoracion;
-            if (consulta == null)
+            int idValoracion = consulta.AsEnumerable().FirstOrDefault();
+            if (idValoracion == 0)
             {
-                string sql = "INSERT INTO VALORACIONES VALUES(NULL, @IDRECETA, @IDUSUARIO, @VALORACION)";
+                string sql = "INSERT INTO VALORACIONES VALUES(@IDRECETA, @IDUSUARIO, @VALORACION)";
                 SqlParameter pamIdReceta = new SqlParameter("@IDRECETA", idReceta);
                 SqlParameter pamIdUsuario = new SqlParameter("@IDUSUARIO", idUsuario);
-                int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamIdReceta, pamIdUsuario);
+                SqlParameter pamValoracion = new SqlParameter("@VALORACION", valoracion);
+                int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamIdReceta, pamIdUsuario, pamValoracion);
                 return false;
             }
             else
