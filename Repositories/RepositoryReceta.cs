@@ -153,7 +153,6 @@ namespace CupMetric.Repositories
 
                 }
             }
-            string hola = "";
         }
         public async Task UpdateRecetaAsync(Receta receta)
         {
@@ -188,13 +187,40 @@ namespace CupMetric.Repositories
             return consulta;
         }
 
-        public async Task<List<Receta>> FilterRecetaByCategoriaAsync(int IdCategoria)
+        public async Task<List<RecetaIngredienteValoracion>> FilterRecetaByCategoriaAsync(int idCategoria)
         {
-            string sql = "SELECT * FROM RECETA WHERE IDCATEGORIA=@IDCATEGORIA";
-            SqlParameter pamId = new SqlParameter("@IDCATEGORIA", IdCategoria);
+            var consulta = await this.context.Recetas.Where(r => r.IdCategoria == idCategoria).ToListAsync();
+            List<RecetaIngredienteValoracion> recetasFormateadas = new List<RecetaIngredienteValoracion>();
+            foreach (Receta rec in consulta)
+            {
+                string sql = "SP_RECETA_VALORACION_INGREDIENTES";
+                this.com.Parameters.AddWithValue("@IDRECETA", rec.IdReceta);
+                SqlParameter pamValoracion = new SqlParameter("@VALORACION", 0);
+                pamValoracion.Direction = ParameterDirection.Output;
+                this.com.Parameters.Add(pamValoracion);
+                this.com.CommandType = CommandType.StoredProcedure;
+                this.com.CommandText = sql;
+                this.cn.Open();
+                this.reader = this.com.ExecuteReader();
 
-            var receta = await this.context.Recetas.FromSqlRaw(sql, pamId).ToListAsync();
-            return receta;
+                RecetaIngredienteValoracion recetasForm = new RecetaIngredienteValoracion();
+                recetasForm.IdIngrediente = new List<int>();
+                recetasForm.NombreIngrediente = new List<string>();
+                while (this.reader.Read())
+                {
+                    recetasForm.IdIngrediente.Add(int.Parse(this.reader["IDINGREDIENTE"].ToString()));
+                    recetasForm.NombreIngrediente.Add(this.reader["NOMBRE"].ToString());
+
+                }
+                this.reader.Close();
+                recetasForm.Valoracion = int.Parse(pamValoracion.Value.ToString());
+                recetasForm.Receta = rec;
+                this.com.Parameters.Clear();
+                this.cn.Close();
+                recetasFormateadas.Add(recetasForm);
+
+            }
+            return recetasFormateadas;
         }
         //Completar
 /*        public async Task<List<Receta>> FilterRecetaByIngredienteAsync(int[] IdIngredientes)

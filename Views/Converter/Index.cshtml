@@ -62,7 +62,8 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
                     <div class="col-6 col-sm-4 col-md-3 text-center">
                         <img src="~/images/tools/@utensilio.Imagen" class="img-fluid" style="width:100px;height:100px" />
                         <h4>@utensilio.Nombre</h4>
-                        <p class="text-primary fs-6">*Medida aproximada: @utensilio.Volumen ml</p>
+                        <p class="text-opacity-75 text-dark">@utensilio.Recomendacion</p>
+                        <p class="text-dark fs-6">* Medida aproximada: @utensilio.Volumen ml</p>
                     </div>
 
                     }
@@ -71,13 +72,6 @@ rounded-3 bg-opacity-10 box-shadow minh-50">
         </div>
     }
 </div>
-
-
-<style>
-    .minh-50 {
-        min-height: 50vh;
-    }
-</style>
 
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

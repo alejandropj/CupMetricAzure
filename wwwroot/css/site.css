@@ -19,17 +19,36 @@ html {
 
 body {
     margin-bottom: 60px;
-    /*background: linear-gradient(to bottom right,#FF5733, #FFA07A);*/
+    background: rgb(143,156,152);
 }
 
 footer {
-    background: linear-gradient(to right, #99fdef, #2cefc0);
+    background: #A0ABA7
 }
 
+.minh-50 {
+    min-height: 50vh;
+}
+.minh-75 {
+    min-height: 75vh;
+}
+.calculator-image-container {
+    position:relative;
+    background-image: url('../images/calculadora.jpg');
+    background-size: cover;
+    background-position: center;
+}
+.overlay-calculator {
+    position: absolute; /* Posicionamiento absoluto para que cubra todo el contenedor */
+    top: 0;
+    left: 0;
+    width: 100%; /* Cubrir completamente el contenedor */
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
 /**{
     border:1px solid black;
 }*/
-
 input.transparent-input {
     /*background-color: transparent !important;*/
     border: none !important;

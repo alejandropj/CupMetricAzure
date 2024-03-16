@@ -17,6 +17,23 @@ namespace CupMetric.Controllers
         public async Task<IActionResult> Index()
         {
             List<RecetaIngredienteValoracion> recetas = await this.repo.GetRecetasFormattedAsync();
+            ViewData["SelectedFilter"] = 0;
+            ViewData["CATEGORIAS"] = await this.repo.GetCategoriasAsync();
+            return View(recetas);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Index(int filter)
+        {
+            List<RecetaIngredienteValoracion> recetas;
+            if (filter == 0)
+            {
+                recetas = await this.repo.GetRecetasFormattedAsync();
+            }
+            else
+            {
+                recetas = await this.repo.FilterRecetaByCategoriaAsync(filter);
+            }
+            ViewData["SelectedFilter"] = filter;
             ViewData["CATEGORIAS"] = await this.repo.GetCategoriasAsync();
             return View(recetas);
         }

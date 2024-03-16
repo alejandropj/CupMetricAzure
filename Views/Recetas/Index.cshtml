@@ -26,15 +26,19 @@
             <h1 class="text-center">Recetas</h1>
             <div >
                 <div class="btn-group mb-3 d-flex" role="group" aria-label="Grupo de botones">
-                    <span class="fs-4 px-2">Filtrar:</span>
+                    @* <span class="fs-4 px-2">Filtrar:</span> *@
                     <div >
-                    <input type="radio" class="btn-check px-2" name="filter" id="option" checked>
-                    <label class="btn btn-outline-dark rounded-pill mx-2 px-2" for="option">Todos</label>
-                    @for(int j=0;j<categorias.Count;j++)
-                    {
-                        <input type="radio" class="btn-check" name="filter" id="@categorias[j].IdCategoria" value="@categorias[j].IdCategoria" autocomplete="off">
-                        <label class="btn btn-outline-dark rounded-pill mx-2 px-2" for="@categorias[j].IdCategoria">@categorias[j].Nombre</label>
-                    }
+                        <form method="post">
+                            <button class="btn btn-dark fs-4 px-2">Filtrar</button>
+                            <input type="radio" value="0" class="btn-check px-2" name="filter" id="option" checked="@((int)ViewData["SelectedFilter"] == 0 ? "checked" : null)">
+                            <label class="btn btn-outline-dark rounded-pill mx-2 px-2" for="option">Todos</label>
+                            @for(int j=0;j<categorias.Count;j++)
+                            {
+                                <input type="radio" class="btn-check" name="filter" id="@categorias[j].IdCategoria" value="@categorias[j].IdCategoria" autocomplete="off" checked="@((int)ViewData["SelectedFilter"] == categorias[j].IdCategoria ? "checked" : null)">
+                                <label class="btn btn-outline-dark rounded-pill mx-2 px-2" for="@categorias[j].IdCategoria">@categorias[j].Nombre</label>
+                            }
+                        
+                        </form>
                     </div>
                 </div>
             </div>
@@ -47,10 +51,15 @@
                     </div>
                 }
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    @if(Model.Count ==0){
+                        <div class="minh-50 text-center">
+                            <h1 class="d-block">No existen recetas con ese filtro, escoja otro.</h1>
+                        </div>
+                    }
                     @foreach (RecetaIngredienteValoracion modelReceta in Model)
                     {
                         <div class="col mb-5">
-                            <div class="card h-100">
+                            <div class="card h-100 bg-body rounded-3 bg-opacity-25 box-shadow">
                                 <!-- Sale badge-->
                                 @if (i < 3)
                                 {
@@ -74,7 +83,7 @@
                                         </div>
                                         @foreach (string nombreIngr in @modelReceta.NombreIngrediente)
                                         {
-                                            <span class="text-primary">* @nombreIngr</span>
+                                            <span class="text-dark text-opacity-70">* @nombreIngr</span>
 
                                             <br />
                                         }
