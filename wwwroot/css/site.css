@@ -25,6 +25,18 @@ body {
 footer {
     background: #A0ABA7
 }
+.cascading-right {
+    margin-right: -50px;
+}
+
+@media (max-width: 991.98px) {
+    .cascading-right
+
+{
+    margin-right: 0;
+}
+
+}
 
 .minh-50 {
     min-height: 50vh;

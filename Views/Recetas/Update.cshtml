@@ -1,0 +1,69 @@
+﻿@model CupMetric.Models.Receta
+
+@{
+    ViewData["Title"] = "Actualizar";
+}
+
+<div class="container text-center mt-2 p-3 bg-body rounded-3 bg-opacity-10 box-shadow">
+    <a asp-action="List" class="link-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+        </svg> Volver
+    </a>
+    <h1 class="text-center">Actualizar Receta</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4 mx-auto">
+        <form asp-action="Update">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdReceta" class="control-label"></label>
+                <input asp-for="IdReceta" class="form-control" disabled/>
+                <span asp-validation-for="IdReceta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Instrucciones" class="control-label"></label>
+                <input asp-for="Instrucciones" class="form-control" />
+                <span asp-validation-for="Instrucciones" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Imagen" class="control-label"></label>
+                <input asp-for="Imagen" class="form-control" />
+                <span asp-validation-for="Imagen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCategoria" class="control-label"></label>
+                <input asp-for="IdCategoria" class="form-control" />
+                <span asp-validation-for="IdCategoria" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TiempoPreparacion" class="control-label"></label>
+                <input asp-for="TiempoPreparacion" class="form-control" />
+                <span asp-validation-for="TiempoPreparacion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Visitas" class="control-label"></label>
+                <input asp-for="Visitas" class="form-control" />
+                <span asp-validation-for="Visitas" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MediaValoraciones" class="control-label"></label>
+                <input asp-for="MediaValoraciones" class="form-control" />
+                <span asp-validation-for="MediaValoraciones" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Enviar" class="btn btn-dark" />
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

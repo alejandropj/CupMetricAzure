@@ -1,5 +1,6 @@
 ﻿@{
-    ViewData["Title"] = "Inicio";
+    ViewData["Title"] = "Inicio"; 
+    string usuario = Context.Session.GetString("USUARIO");
 }
 
 <!--style="background: linear-gradient(to bottom right,lightgray, darkgray);"-->
@@ -13,7 +14,11 @@
             </h4>
             <br />
             <a class="btn btn-lg btn-outline-light" asp-controller="Converter" asp-action="Index">Acceda a la conversión</a>
-            <a class="btn btn-lg btn-outline-light" asp-controller="User" asp-action="Login">Inicia sesión</a>
+             @if (usuario == null)
+                {
+                <a class="btn btn-lg btn-outline-light" asp-controller="User" asp-action="Login">Inicia sesión</a>
+            }
+            <a class="btn btn-lg btn-outline-light" asp-controller="Recetas" asp-action="Index">Visite nuestras recetas</a>
         </div>
     </div>
 </div>

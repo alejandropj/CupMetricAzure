@@ -14,6 +14,9 @@
         <a class="btn btn-primary disabled placeholder col-6" aria-disabled="true"></a>
     </div>
 </div> *@
+@{
+    ViewData["Title"] = "Recetas";
+}
 @model List<RecetaIngredienteValoracion>
 @{
     int i = 0;
@@ -26,12 +29,11 @@
             <h1 class="text-center">Recetas</h1>
             <div >
                 <div class="btn-group mb-3 d-flex" role="group" aria-label="Grupo de botones">
-                    @* <span class="fs-4 px-2">Filtrar:</span> *@
                     <div >
                         <form method="post">
-                            <button class="btn btn-dark fs-4 px-2">Filtrar</button>
-                            <input type="radio" value="0" class="btn-check px-2" name="filter" id="option" checked="@((int)ViewData["SelectedFilter"] == 0 ? "checked" : null)">
-                            <label class="btn btn-outline-dark rounded-pill mx-2 px-2" for="option">Todos</label>
+                            <button class="btn btn-dark px-2">Filtrar</button>
+                            <input type="radio" value="0" class="btn-check" name="filter" id="option" checked="@((int)ViewData["SelectedFilter"] == 0 ? "checked" : null)">
+                            <label class="btn btn-outline-dark rounded-pill m-2 px-2" for="option">Todos</label>
                             @for(int j=0;j<categorias.Count;j++)
                             {
                                 <input type="radio" class="btn-check" name="filter" id="@categorias[j].IdCategoria" value="@categorias[j].IdCategoria" autocomplete="off" checked="@((int)ViewData["SelectedFilter"] == categorias[j].IdCategoria ? "checked" : null)">
@@ -60,7 +62,7 @@
                     {
                         <div class="col mb-5">
                             <div class="card h-100 bg-body rounded-3 bg-opacity-25 box-shadow">
-                                <!-- Sale badge-->
+                                <!-- Badge-->
                                 @if (i < 3)
                                 {
                                     <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Destacado</div>
@@ -90,7 +92,7 @@
 
                                     </div>
                                 </div>
-                                <!-- Product actions-->
+                                <!-- Actions-->
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                     <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="Receta" asp-route-idreceta="@modelReceta.Receta.IdReceta">Ver receta</a></div>
                                 </div>

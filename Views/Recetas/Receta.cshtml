@@ -23,9 +23,13 @@
         }
 </style>
 
-<div class="container mt-4">
+<div class="container mt-4 p-3 bg-body rounded-3 bg-opacity-10 box-shadow">
     <div>
-        <a asp-action="Index">Volver a recetas</a>
+        <a asp-action="Index" class="link-dark">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+            </svg> Volver a recetas
+        </a>
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -39,15 +43,15 @@
             <!-- Visitas -->
             <p><strong>Visitas:</strong> @Model.Receta.Visitas</p>
             <!-- Instrucciones -->
-            <h4 class="text-primary">Pasos a seguir:</h4>
+            <h4 class="text-dark text-opacity-75">Pasos a seguir:</h4>
             <p>@Model.Receta.Instrucciones</p>
             <!-- Ingredientes -->
-            <h4 class="text-success">Ingredientes: <br /> </h4>
-            <ul class="list-group">
+            <h4 class="text-dark text-opacity-50">Ingredientes: <br /> </h4>
+            <ul class="list-group box-shadow">
                 
                 @for(int i = 0; i< Model.NombreIngrediente.Count; i++)
                 {
-                    <li class="list-group-item">
+                    <li class="list-group-item list-group-item-dark">
                         @Model.NombreIngrediente[i] - @Model.Cantidad[i] @if(Model.Medible[i]==true){ <span>gramos</span> }
                     </li>
                 }
