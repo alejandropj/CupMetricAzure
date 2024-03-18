@@ -60,20 +60,51 @@ namespace CupMetric.Controllers
             return View(user);
         }
 
-        //START OF USER
         public async Task<IActionResult> List()
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             List<User> usuarios = await this.repo.GetUsersAsync();
             return View(usuarios);
         }
         public async Task<IActionResult> Details(int IdUsuario)
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             User usuario = await this.repo.FindUserByIdAsync(IdUsuario);
             return View(usuario);
         }        
         public IActionResult Create()
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
+            
         }
         [HttpPost]
         public async Task<IActionResult> Create(string nombre, string email, string password)
@@ -91,10 +122,28 @@ namespace CupMetric.Controllers
         public async Task<IActionResult> Update(int idUsuario, string nombre, string email, string password)
         {
             await this.repo.UpdateUserAsync(idUsuario, nombre, email,password);
-            return RedirectToAction("List");
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol == 1)
+            {
+                return RedirectToAction("Personal","User");
+            }
+            else
+            {
+                return RedirectToAction("List");
+            }
         }
         public async Task<IActionResult> Delete(int IdUsuario)
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             await this.repo.DeleteUserAsync(IdUsuario);
             return RedirectToAction("List");
         }

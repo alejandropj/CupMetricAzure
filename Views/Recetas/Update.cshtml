@@ -17,9 +17,7 @@
         <form asp-action="Update">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="IdReceta" class="control-label"></label>
-                <input asp-for="IdReceta" class="form-control" disabled/>
-                <span asp-validation-for="IdReceta" class="text-danger"></span>
+                <input asp-for="IdReceta" class="form-control" type="hidden"/>
             </div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -28,7 +26,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Instrucciones" class="control-label"></label>
-                <input asp-for="Instrucciones" class="form-control" />
+                <textarea asp-for="Instrucciones" rows="8" class="form-control" style="resize:none;"></textarea>
                 <span asp-validation-for="Instrucciones" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -38,24 +36,24 @@
             </div>
             <div class="form-group">
                 <label asp-for="IdCategoria" class="control-label"></label>
-                <input asp-for="IdCategoria" class="form-control" />
+                <input asp-for="IdCategoria" class="form-control" min="1"/>
                 <span asp-validation-for="IdCategoria" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TiempoPreparacion" class="control-label"></label>
-                <input asp-for="TiempoPreparacion" class="form-control" />
+                <label asp-for="TiempoPreparacion" class="control-label">Tiempo de preparación</label>
+                <input asp-for="TiempoPreparacion" class="form-control" min="1" />
                 <span asp-validation-for="TiempoPreparacion" class="text-danger"></span>
             </div>
-            <div class="form-group">
+@*             <div class="form-group">
                 <label asp-for="Visitas" class="control-label"></label>
                 <input asp-for="Visitas" class="form-control" />
                 <span asp-validation-for="Visitas" class="text-danger"></span>
-            </div>
+            </div> 
             <div class="form-group">
                 <label asp-for="MediaValoraciones" class="control-label"></label>
                 <input asp-for="MediaValoraciones" class="form-control" />
                 <span asp-validation-for="MediaValoraciones" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
                 <input type="submit" value="Enviar" class="btn btn-dark" />
             </div>

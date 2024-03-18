@@ -37,37 +37,25 @@ namespace CupMetric.Repositories
         }
         public async Task CreateIngredienteAsync(Ingrediente ingrediente)
         {
-            string sql = "INSERT INTO INGREDIENTE VALUES (NULL, @NOMBRE, @DENSIDAD, @IMAGEN, @ALMACENAMIENTO, @SUSTITUTIVO, @Medible)";
-            SqlParameter pamNombre = new SqlParameter("@NOMBRE", ingrediente.Nombre);
-            SqlParameter pamDensidad = new SqlParameter("@DENSIDAD", ingrediente.Densidad);
-            SqlParameter pamImagen = new SqlParameter("@IMAGEN", ingrediente.Imagen);
-            SqlParameter pamAlmacenamiento = new SqlParameter("@ALMACENAMIENTO", ingrediente.Almacenamiento);
-            SqlParameter pamSustitutivo = new SqlParameter("@SUSTITUTIVO", ingrediente.Sustitutivo);
-            SqlParameter pamSinonimo = new SqlParameter("@Medible", ingrediente.Medible);
-
-            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre, 
-                pamDensidad, pamImagen, pamAlmacenamiento, pamSustitutivo, pamSinonimo);
+            this.context.Ingredientes.Add(ingrediente);
+            this.context.SaveChanges();
         }
         public async Task UpdateIngredienteAsync(Ingrediente ingrediente)
         {
-            string sql = "UPDATE INGREDIENTE SET NOMBRE=@NOMBRE, DENSIDAD= @DENSIDAD, " +
-                "IMAGEN=@IMAGEN, ALMACENAMIENTO = @ALMACENAMIENTO, SUSTITUTIVO= @SUSTITUTIVO, " +
-                "Medible = @Medible";
-            SqlParameter pamNombre = new SqlParameter("@NOMBRE", ingrediente.Nombre);
-            SqlParameter pamDensidad = new SqlParameter("@DENSIDAD", ingrediente.Densidad);
-            SqlParameter pamImagen = new SqlParameter("@IMAGEN", ingrediente.Imagen);
-            SqlParameter pamAlmacenamiento = new SqlParameter("@ALMACENAMIENTO", ingrediente.Almacenamiento);
-            SqlParameter pamSustitutivo = new SqlParameter("@SUSTITUTIVO", ingrediente.Sustitutivo);
-            SqlParameter pamSinonimo = new SqlParameter("@Medible", ingrediente.Medible);
-
-            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre,
-                pamDensidad, pamImagen, pamAlmacenamiento, pamSustitutivo, pamSinonimo);
+            Ingrediente ingredienteOld = await this.FindIngredienteByIdAsync(ingrediente.IdIngrediente);
+            ingredienteOld.Nombre = ingrediente.Nombre;
+            ingredienteOld.Densidad = ingrediente.Densidad;
+            ingredienteOld.Imagen = ingrediente.Imagen;
+            ingredienteOld.Almacenamiento = ingrediente.Almacenamiento;
+            ingredienteOld.Sustitutivo = ingrediente.Sustitutivo;
+            ingredienteOld.Medible = ingrediente.Medible;
+            this.context.SaveChanges();
         }
         public async Task DeleteIngredienteAsync(int idIngrediente)
         {
-            string sql = "DELETE FROM INGREDIENTE WHERE IDINGREDIENTE = @IDINGREDIENTE";
-            SqlParameter pamId = new SqlParameter("@IDINGREDIENTE", idIngrediente);
-            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamId);
+            Ingrediente ingrediente = await this.FindIngredienteByIdAsync(idIngrediente);
+            this.context.Ingredientes.Remove(ingrediente);
+            this.context.SaveChanges();
         }
     }
 }

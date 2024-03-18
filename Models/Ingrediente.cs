@@ -22,7 +22,5 @@ namespace CupMetric.Models
         public int? Sustitutivo { get; set; }     
         [Column("Medible")]
         public bool Medible { get; set; }
-/*        // Propiedad de navegación para las relaciones con las recetas
-        public ICollection<IngredienteReceta> IngredientesReceta { get; set; }*/
     }
 }

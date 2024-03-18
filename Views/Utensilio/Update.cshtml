@@ -18,9 +18,7 @@
         <form asp-action="Update">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="IdUtensilio" class="control-label"></label>
-                <input asp-for="IdUtensilio" class="form-control" disabled/>
-                <span asp-validation-for="IdUtensilio" class="text-danger"></span>
+                <input asp-for="IdUtensilio" type="hidden" class="form-control"/>
             </div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>

@@ -13,16 +13,46 @@ namespace CupMetric.Controllers
         }
         public async Task<IActionResult> List()
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             List<Utensilio> utensilios = await this.repo.GetUtensiliosAsync();
             return View(utensilios);
         }        
         public async Task<IActionResult> Details(int idUtensilio)
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             Utensilio utensilio = await this.repo.FindUtensilioByIdAsync(idUtensilio);
             return View(utensilio);
         }
         public async Task<IActionResult> Create()
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
         [HttpPost]
@@ -33,6 +63,16 @@ namespace CupMetric.Controllers
         }        
         public async Task<IActionResult> Update(int idUtensilio)
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             Utensilio utensilio = await this.repo.FindUtensilioByIdAsync(idUtensilio);
             return View(utensilio);
         }
@@ -44,6 +84,16 @@ namespace CupMetric.Controllers
         }
         public async Task<IActionResult> Delete(int idUtensilio)
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             await this.repo.DeleteUtensilioAsync(idUtensilio);
             return RedirectToAction("List");
         }

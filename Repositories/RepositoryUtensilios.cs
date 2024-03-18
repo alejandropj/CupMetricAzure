@@ -30,7 +30,7 @@ namespace CupMetric.Repositories
         }
         public async Task CreateUtensilioAsync(Utensilio utensilio)
         {
-            string sql = "INSERT INTO UTENSILIO VALUES (NULL, @NOMBRE, @VOLUMEN, @IMAGEN, @RECOMENDACION)";
+            string sql = "INSERT INTO UTENSILIO VALUES (@NOMBRE, @VOLUMEN, @IMAGEN, @RECOMENDACION)";
             SqlParameter pamNombre = new SqlParameter("@NOMBRE", utensilio.Nombre);
             SqlParameter pamVolumen = new SqlParameter("@VOLUMEN", utensilio.Volumen);
             SqlParameter pamImagen = new SqlParameter("@IMAGEN", utensilio.Imagen);
@@ -41,15 +41,12 @@ namespace CupMetric.Repositories
         }
         public async Task UpdateUtensilioAsync(Utensilio utensilio)
         {
-            string sql = "UPDATE UTENSILIO SET NOMBRE=@NOMBRE, VOLUMEN= @VOLUMEN, " +
-                "IMAGEN=@IMAGEN, RECOMENDACION = @RECOMENDACION";
-            SqlParameter pamNombre = new SqlParameter("@NOMBRE", utensilio.Nombre);
-            SqlParameter pamVolumen = new SqlParameter("@VOLUMEN", utensilio.Volumen);
-            SqlParameter pamImagen = new SqlParameter("@IMAGEN", utensilio.Imagen);
-            SqlParameter pamRecomendacion = new SqlParameter("@RECOMENDACION", utensilio.Recomendacion);
-
-            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre,
-                pamVolumen, pamImagen, pamRecomendacion);
+            Utensilio utensilioOld = await this.FindUtensilioByIdAsync(utensilio.IdUtensilio);
+            utensilioOld.Nombre = utensilio.Nombre;
+            utensilioOld.Volumen = utensilio.Volumen;
+            utensilioOld.Imagen = utensilio.Imagen;
+            utensilioOld.Recomendacion = utensilio.Recomendacion;
+            this.context.SaveChangesAsync();
         }
         public async Task DeleteUtensilioAsync(int idUtensilio)
         {

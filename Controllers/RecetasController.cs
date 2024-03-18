@@ -64,11 +64,31 @@ namespace CupMetric.Controllers
         //Admin
         public async Task<IActionResult> List()
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             List<Receta> recetas = await this.repo.GetRecetasAsync();
             return View(recetas);
         }
         public async Task<IActionResult> Details(int idReceta)
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             Receta receta = await this.repo.FindRecetaByIdAsync(idReceta);
             return View(receta);
         }
@@ -101,6 +121,16 @@ namespace CupMetric.Controllers
         }
         public async Task<IActionResult> Update(int idReceta)
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             Receta receta = await this.repo.FindRecetaByIdAsync((int)idReceta);
             return View(receta);
         }
@@ -112,6 +142,16 @@ namespace CupMetric.Controllers
         }
         public async Task<IActionResult> Delete(int idReceta)
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             await this.repo.DeleteRecetaAsync(idReceta);
             return RedirectToAction("List");
         }

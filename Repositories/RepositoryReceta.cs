@@ -156,17 +156,13 @@ namespace CupMetric.Repositories
         }
         public async Task UpdateRecetaAsync(Receta receta)
         {
-            string sql = "UPDATE RECETA SET NOMBRE= @NOMBRE, INSTRUCCIONES = @INSCRUCCIONES" +
-                ", IMAGEN = @IMAGEN, IDCATEGORIA = @IDCATEGORIA, TIEMPOPREPARACION = @TIEMPO," +
-                "VISITAS = @VISITAS WHERE IDRECETA = @IDRECETA";
-            SqlParameter pamNombre = new SqlParameter("@NOMBRE", receta.Nombre);
-            SqlParameter pamInstrucciones = new SqlParameter("@INSTRUCCIONES", receta.Instrucciones);
-            SqlParameter pamImagen = new SqlParameter("@IMAGEN", receta.Imagen);
-            SqlParameter pamIdCategoria = new SqlParameter("@IDCATEGORIA", receta.IdCategoria);
-            SqlParameter pamTiempo = new SqlParameter("@TIEMPO", receta.TiempoPreparacion);
-            SqlParameter pamId = new SqlParameter("@IDRECETA", receta.IdReceta);
-            int af = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombre, pamInstrucciones,
-                pamImagen, pamIdCategoria, pamTiempo, pamId);
+            Receta recetaOld = await this.FindRecetaByIdAsync(receta.IdReceta);
+            recetaOld.Nombre = receta.Nombre;
+            recetaOld.Instrucciones = receta.Instrucciones;
+            recetaOld.Imagen = receta.Imagen;
+            recetaOld.IdCategoria = receta.IdCategoria;
+            recetaOld.TiempoPreparacion = receta.TiempoPreparacion;
+            this.context.SaveChanges();
         }
         public async Task DeleteRecetaAsync(int IdReceta)
         {

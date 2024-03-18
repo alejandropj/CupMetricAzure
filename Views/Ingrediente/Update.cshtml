@@ -9,16 +9,14 @@
             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
         </svg> Volver
     </a>
-    <h1 class="text-center">Crear Ingrediente</h1>
+    <h1 class="text-center">Actualizar Ingrediente</h1>
 <hr />
 <div class="row">
     <div class="col-md-4 mx-auto">
-        <form asp-action="Edit">
+        <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="IdIngrediente" class="control-label"></label>
-                    <input asp-for="IdIngrediente" class="form-control" disabled />
-                <span asp-validation-for="IdIngrediente" class="text-danger"></span> 
+                <input asp-for="IdIngrediente" class="form-control" type="hidden" />
             </div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -27,14 +25,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="Densidad" class="control-label"></label>
-                <input asp-for="Densidad" class="form-control" />
+                <input type="text" pattern="[^.]*" name="Densidad" class="form-control" value="@Model.Densidad"/>
                 <span asp-validation-for="Densidad" class="text-danger"></span>
             </div>
-            <div class="form-group">
+@*             <div class="form-group">
                 <label asp-for="Imagen" class="control-label"></label>
                 <input asp-for="Imagen" class="form-control" />
                 <span asp-validation-for="Imagen" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
                 <label asp-for="Almacenamiento" class="control-label"></label>
                 <input asp-for="Almacenamiento" class="form-control" />
@@ -56,9 +54,6 @@
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

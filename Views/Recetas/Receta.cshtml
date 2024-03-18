@@ -32,12 +32,12 @@
         </a>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-lg-6 mt-5">
             <!-- Imagen en grande -->
-            <img src="@Model.Receta.Imagen" alt="Imagen de @Model.Receta.Nombre" class="img-fluid">
+            <img src="~/images/recipes/@Model.Receta.Imagen" style="height:70vh; width:80vh" alt="Imagen de @Model.Receta.Nombre" class="img-fluid rounded-3 text-center shadow-lg">
         </div>
         <div class="col-md-6">
-            <h1>@Model.Receta.Nombre</h1>
+            <h1 class="pt-sm-0 pt-5">@Model.Receta.Nombre</h1>
             <!-- Tiempo de preparación -->
             <p><strong>Tiempo de Preparación:</strong> @Model.Receta.TiempoPreparacion minutos</p>
             <!-- Visitas -->

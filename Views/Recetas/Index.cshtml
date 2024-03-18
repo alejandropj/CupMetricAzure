@@ -14,11 +14,10 @@
         <a class="btn btn-primary disabled placeholder col-6" aria-disabled="true"></a>
     </div>
 </div> *@
+@model List<RecetaIngredienteValoracion>
+
 @{
     ViewData["Title"] = "Recetas";
-}
-@model List<RecetaIngredienteValoracion>
-@{
     int i = 0;
     string usuario = Context.Session.GetString("USUARIO");
     List<Categoria> categorias = ViewData["CATEGORIAS"] as List<Categoria>;
@@ -68,7 +67,7 @@
                                     <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Destacado</div>
                                 }
                                 <!-- Product image-->
-                                <img class="card-img-top" src="@modelReceta.Receta.Imagen" alt="@modelReceta.Receta.Nombre">
+                                <img class="card-img-top" style="height:150px" src="~/images/recipes/@modelReceta.Receta.Imagen" alt="@modelReceta.Receta.Nombre">
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">

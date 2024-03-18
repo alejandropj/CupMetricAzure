@@ -19,6 +19,16 @@ namespace CupMetric.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            string rol = HttpContext.Session.GetString("IDROL");
+            if (rol == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            if (idRol != 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             int conteoUsers = await this.repositoryUsers.CountUsersAsync();
             ViewData["CONTEOUSERS"] = conteoUsers;
             int conteoRecetas = await this.repositoryRecetas.CountRecetasAsync();
