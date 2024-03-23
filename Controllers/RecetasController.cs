@@ -1,7 +1,9 @@
-﻿using CupMetric.Models;
+﻿using CupMetric.Filters;
+using CupMetric.Models;
 using CupMetric.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CupMetric.Controllers
 {
@@ -43,10 +45,11 @@ namespace CupMetric.Controllers
             await this.repo.AddVisitRecetaAsync(idreceta);
             return View(receta);
         }
+        [AuthorizeUsuarios]
         [HttpPost]
         public async Task<IActionResult> Receta(int idreceta, int valoracion)
         {
-            int idUsuario = int.Parse(HttpContext.Session.GetString("IDUSUARIO"));
+            int idUsuario = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             bool exists = await this.repo.PostValoracionAsync(idreceta, idUsuario ,valoracion);
             if (exists)
             {
@@ -61,37 +64,21 @@ namespace CupMetric.Controllers
             RecetaIngredienteValoracion receta = await this.repo.FindRecetaFormattedAsync(idreceta);
             return View(receta);
         }
+
         //Admin
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> List()
         {
-            string rol = HttpContext.Session.GetString("IDROL");
-            if (rol == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
-            if (idRol != 2)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             List<Receta> recetas = await this.repo.GetRecetasAsync();
             return View(recetas);
         }
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Details(int idReceta)
         {
-            string rol = HttpContext.Session.GetString("IDROL");
-            if (rol == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
-            if (idRol != 2)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             Receta receta = await this.repo.FindRecetaByIdAsync(idReceta);
             return View(receta);
         }
+        [AuthorizeUsuarios]
         public async Task<IActionResult> Create()
         {
             List<Categoria> categorias = await this.repo.GetCategoriasAsync();
@@ -101,6 +88,7 @@ namespace CupMetric.Controllers
             return View();
         }
         [HttpPost]
+        [AuthorizeUsuarios]
         public async Task<IActionResult> Create(Receta receta, IFormCollection form)
         {
             List<int> idIngredientes = new List<int>();
@@ -117,29 +105,32 @@ namespace CupMetric.Controllers
             receta.Visitas = 0;
 
             await this.repo.CreateRecetaAsync(receta, idIngredientes, cantidades);
-            return RedirectToAction("List");
+
+            var role = HttpContext.User.FindFirstValue(ClaimTypes.Role);
+            if (int.Parse(role) == 2)
+            {
+                return RedirectToAction("List");
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Update(int idReceta)
         {
-            string rol = HttpContext.Session.GetString("IDROL");
-            if (rol == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
-            if (idRol != 2)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             Receta receta = await this.repo.FindRecetaByIdAsync((int)idReceta);
             return View(receta);
         }
         [HttpPost]
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Update(Receta receta)
         {
             await this.repo.UpdateRecetaAsync(receta);
             return RedirectToAction("List");
         }
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int idReceta)
         {
             string rol = HttpContext.Session.GetString("IDROL");

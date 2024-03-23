@@ -19,7 +19,7 @@
 @{
     ViewData["Title"] = "Recetas";
     int i = 0;
-    string usuario = Context.Session.GetString("USUARIO");
+    bool session = Context.User.Identity.IsAuthenticated;
     List<Categoria> categorias = ViewData["CATEGORIAS"] as List<Categoria>;
 }
 <div class="container mt-sm-2 col-xl-8 col-md-10 col-sm-12 bg-body rounded-3 bg-opacity-10 box-shadow">
@@ -45,7 +45,7 @@
             </div>
             <div class="">
 
-                @if (usuario != null)
+                @if (session != null)
                 {
                     <div class="text-center">
                         <a asp-action="Create" class="btn btn-dark btn-sm my-2">Crear Receta</a>

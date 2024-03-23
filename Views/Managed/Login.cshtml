@@ -1,0 +1,46 @@
+﻿<section class="text-center text-lg-start">
+    <div class="container py-4">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="card cascading-right" style="
+            background: hsla(0, 0%, 100%, 0.55);
+            backdrop-filter: blur(30px);
+            ">
+                    <div class="card-body p-5 shadow-5 text-center">
+                        <h2 class="fw-bold mb-5">Inicia sesión</h2>
+                        <form method="post">
+
+                            <!-- Email input -->
+                            <div class="form-outline mb-4" data-mdb-input-init>
+                                <input type="email" id="formEmail" name="email" class="form-control" placeholder="Introduce correo" />
+                                <label class="form-label" for="typeEmail">Correo</label>
+                            </div>
+
+                            <!-- Password input -->
+                            <div class="form-outline mb-4" data-mdb-input-init>
+                                <input type="password" id="formPassword" name="password" class="form-control" placeholder="Introduce contraseña" />
+                                <label class="form-label" for="typePassword">Contraseña</label>
+                            </div>
+
+                            <!-- Submit button -->
+                            <button type="submit" class="btn btn-primary btn-block mb-4">
+                                Enviar
+                            </button>
+                            @if (ViewData["MENSAJE"] != null)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    @ViewData["MENSAJE"]
+                                </div>
+                            }
+
+                        </form>
+                        <a asp-controller="User" asp-action="Register">Registrate</a>
+                    </div>
+                </div>
+            </div>
+
+            @*       <div class="col-lg-6 mb-5 mb-lg-0">
+            <img src="~/images/login-wallpaper.jpg" class="w-100" alt="Wallpaper"/>
+            </div> *@
+        </div>
+    </div>

@@ -1,6 +1,8 @@
-﻿using CupMetric.Models;
+﻿using CupMetric.Filters;
+using CupMetric.Models;
 using CupMetric.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CupMetric.Controllers
 {
@@ -10,29 +12,6 @@ namespace CupMetric.Controllers
         public UserController(RepositoryUsers repo)
         {
             this.repo = repo;
-        }
-        // LOGIN
-        public IActionResult Login()
-        {
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
-        {
-            User user = await this.repo.LoginUserAsync(email, password);
-            if (user == null)
-            {
-                ViewData["MENSAJE"] = "Credenciales incorrectas";
-                return View();
-            }
-            else
-            {
-                HttpContext.Session.SetString("USUARIO", user.Nombre);
-                HttpContext.Session.SetString("IDROL", user.IdRol.ToString());
-                HttpContext.Session.SetString("IDUSUARIO", user.IdUsuario.ToString());
-                ViewData["MENSAJE"] = "Usuario validado";
-            }
-            return RedirectToAction("Index","Home");
         }
         //REGISTER
         public IActionResult Register()
@@ -46,72 +25,32 @@ namespace CupMetric.Controllers
             ViewData["MENSAJE"] = "Usuario registrado correctamente. Por favor inicie sesión";
             return View();
         }
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Remove("USUARIO");
-            HttpContext.Session.Remove("IDROL");
-            HttpContext.Session.Remove("IDUSUARIO");
-            return RedirectToAction("Index", "Home");
-        }
-        public async Task<IActionResult> Personal()
-        {
-            int idUsuario = int.Parse(HttpContext.Session.GetString("IDUSUARIO"));
-            User user = await this.repo.FindUserByIdAsync(idUsuario);
-            return View(user);
-        }
-
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> List()
         {
-            string rol = HttpContext.Session.GetString("IDROL");
-            if (rol == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
-            if (idRol != 2)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             List<User> usuarios = await this.repo.GetUsersAsync();
             return View(usuarios);
         }
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Details(int IdUsuario)
         {
-            string rol = HttpContext.Session.GetString("IDROL");
-            if (rol == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
-            if (idRol != 2)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             User usuario = await this.repo.FindUserByIdAsync(IdUsuario);
             return View(usuario);
-        }        
+        }
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public IActionResult Create()
         {
-            string rol = HttpContext.Session.GetString("IDROL");
-            if (rol == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
-            if (idRol != 2)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
             return View();
-            
         }
+
         [HttpPost]
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Create(string nombre, string email, string password)
         {
             await this.repo.RegisterUserAsync(nombre, email, password);
             return RedirectToAction("List");
-        }        
+        }
+        [AuthorizeUsuarios]
         public async Task<IActionResult> Update(int IdUsuario)
         {
             User user = await this.repo.FindUserByIdAsync((int)IdUsuario);
@@ -119,31 +58,23 @@ namespace CupMetric.Controllers
             return View(user);
         }
         [HttpPost]
+        [AuthorizeUsuarios]
         public async Task<IActionResult> Update(int idUsuario, string nombre, string email, string password)
         {
             await this.repo.UpdateUserAsync(idUsuario, nombre, email,password);
-            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
+            int idRol = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.Role));
             if (idRol == 1)
             {
-                return RedirectToAction("Personal","User");
+                return RedirectToAction("Personal","Managed");
             }
             else
             {
                 return RedirectToAction("List");
             }
         }
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int IdUsuario)
         {
-            string rol = HttpContext.Session.GetString("IDROL");
-            if (rol == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
-            if (idRol != 2)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             await this.repo.DeleteUserAsync(IdUsuario);
             return RedirectToAction("List");
         }

@@ -1,12 +1,15 @@
 ﻿@{
-    string usuario = Context.Session.GetString("USUARIO");
-    string idRole = Context.Session.GetString("IDROL");
+    //string usuario = Context.Session.GetString("USUARIO");
+    //string idRole = Context.Session.GetString("IDROL");
+    bool session = Context.User.Identity.IsAuthenticated;
+    var userName = Context.User.FindFirstValue(ClaimTypes.Name);
+    var role = Context.User.FindFirstValue(ClaimTypes.Role);
 }
 
-@if (usuario == null && idRole==null)
+@if (!session)
 {
     <li class="nav-item">
-        <a asp-controller="User" asp-action="Login"
+        <a asp-controller="Managed" asp-action="Personal"
            class="nav-link">
             Iniciar Sesión
         </a>
@@ -16,20 +19,20 @@ else
 {
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            @usuario
+            @userName
         </a>
         <ul class="dropdown-menu">
-            @if (int.Parse(idRole) == 2)
+            @if (int.Parse(role) == 2)
             {
                 <!--Admin-->
                 <li><a class="dropdown-item text-dark" asp-controller="Admin" asp-action="Index">Panel admin</a></li>
             }
             else
             {
-                <li><a class="dropdown-item text-dark" asp-controller="User" asp-action="Personal">Personal</a></li>
+                <li><a class="dropdown-item text-dark" asp-controller="Managed" asp-action="Personal">Personal</a></li>
             }
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-dark" asp-controller="User" asp-action="Logout">Cerrar sesión</a></li>
+            <li><a class="dropdown-item text-dark" asp-controller="Managed" asp-action="Logout">Cerrar sesión</a></li>
         </ul>
     </li>
 

@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Receta";
-    string usuario = Context.Session.GetString("USUARIO");
+    bool session = Context.User.Identity.IsAuthenticated;
 }
 
 <style>
@@ -64,7 +64,7 @@
                 }
             </ul> *@
             <!--COMPROBAR SI YA EXISTE VALORACION-->
-            @if(usuario != null)
+            @if(session)
             {
             <hr class="my-3" />
                 @if (ViewData["MENSAJE"] != null)

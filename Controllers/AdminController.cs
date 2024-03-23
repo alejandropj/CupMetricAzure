@@ -1,4 +1,5 @@
-﻿using CupMetric.Repositories;
+﻿using CupMetric.Filters;
+using CupMetric.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CupMetric.Controllers
@@ -17,18 +18,9 @@ namespace CupMetric.Controllers
             this.repositoryUtensilios = repoUtensilios;
             this.repositoryIngredientes = repoIngredientes;
         }
+        [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Index()
         {
-            string rol = HttpContext.Session.GetString("IDROL");
-            if (rol == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            int idRol = int.Parse(HttpContext.Session.GetString("IDROL"));
-            if (idRol != 2)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             int conteoUsers = await this.repositoryUsers.CountUsersAsync();
             ViewData["CONTEOUSERS"] = conteoUsers;
             int conteoRecetas = await this.repositoryRecetas.CountRecetasAsync();
