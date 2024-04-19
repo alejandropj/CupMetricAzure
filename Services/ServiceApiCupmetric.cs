@@ -351,8 +351,15 @@ namespace CupMetric.Services
                     await client.PostAsync(request, content);
                 if (response.IsSuccessStatusCode)
                 {
+                    //string request = "data/user/" + idReceta;
+                    RecetaIngredienteValoracion receta =
+                        await this.CallApiAsync<RecetaIngredienteValoracion>(request);
+
+                    User user = new User();
+
+
+                    //User user = JsonConvert.DeserializeObject<User>(responseData);
                     string responseData = await response.Content.ReadAsStringAsync();
-                    User user = JsonConvert.DeserializeObject<User>(responseData);
                     return user;
                 }
                 else
