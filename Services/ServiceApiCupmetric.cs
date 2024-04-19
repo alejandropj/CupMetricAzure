@@ -7,6 +7,8 @@ using System.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using CupMetric.Helpers;
+using ApiCupMetric.Models;
 
 namespace CupMetric.Services
 {
@@ -23,7 +25,7 @@ namespace CupMetric.Services
             this.Header = new MediaTypeWithQualityHeaderValue("application/json");
             this.httpContextAccessor = httpContextAccessor;
         }
-        public async Task<string> GetTokenAsync(string username, string password)
+        public async Task<string> GetTokenAsync(string email, string password)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -34,7 +36,7 @@ namespace CupMetric.Services
                     (this.Header);
                 LoginModel model = new LoginModel
                 {
-                    UserName = username,
+                    Email = email,
                     Password = password
                 };
                 string jsonData = JsonConvert.SerializeObject(model);
@@ -141,10 +143,16 @@ namespace CupMetric.Services
                 await this.CallApiAsync<Receta>(request);
             return receta;
         }
-        public async Task CreateRecetaAsync(RecetaIngrediente receta)
+        public async Task CreateRecetaAsync(Receta receta, List<int> ingredientes, List<double> cantidades)
         {
             string request = "data/recetas";
-            string jsonData = JsonConvert.SerializeObject(receta);
+            RecetaIngrediente recetaIngrediente = new RecetaIngrediente
+            {
+                Receta = receta,
+                IdIngredientes = ingredientes,
+                Cantidad = cantidades
+            };
+            string jsonData = JsonConvert.SerializeObject(recetaIngrediente);
             StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             using (HttpClient client = new HttpClient())
             {
@@ -275,54 +283,202 @@ namespace CupMetric.Services
         }
         public async Task<List<Ingrediente>> GetIngredientesMediblesAsync()
         {
-            var consulta = from datos in this.context.Ingredientes
-                           where datos.Medible == true
-                           select datos;
-            List<Ingrediente> ingredientes = await consulta.ToListAsync();
+            string request = "data/ingredientes/ingredientesmedibles";
+            List<Ingrediente> ingredientes = await this.CallApiAsync<List<Ingrediente>>(request);
             return ingredientes;
         }
         public async Task<int> CountIngredientesAsync()
         {
-            return await this.context.Ingredientes.CountAsync();
+            string request = "data/ingredientes/countingredientes";
+            int receta =
+                await this.CallApiAsync<int>(request);
+            return receta;
         }
         public async Task<Ingrediente> FindIngredienteByIdAsync(int idIngrediente)
         {
-            var consulta = from datos in this.context.Ingredientes
-                           where datos.IdIngrediente == idIngrediente
-                           select datos;
-            return consulta.AsEnumerable().FirstOrDefault();
+            string request = "data/ingredientes/"+idIngrediente;
+            Ingrediente ingrediente = await this.CallApiAsync<Ingrediente>(request);
+            return ingrediente;
         }
         public async Task CreateIngredienteAsync(Ingrediente ingrediente)
         {
-            this.context.Ingredientes.Add(ingrediente);
-            this.context.SaveChanges();
+            string request = "data/ingredientes";
+            string jsonData = JsonConvert.SerializeObject(ingrediente);
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                //client.DefaultRequestHeaders.Add("Authorization","Bearer " + token);
+
+
+                HttpResponseMessage response =
+                    await client.PostAsync(request, content);
+            }
         }
         public async Task UpdateIngredienteAsync(Ingrediente ingrediente)
         {
-            Ingrediente ingredienteOld = await this.FindIngredienteByIdAsync(ingrediente.IdIngrediente);
-            ingredienteOld.Nombre = ingrediente.Nombre;
-            ingredienteOld.Densidad = ingrediente.Densidad;
-            ingredienteOld.Imagen = ingrediente.Imagen;
-            ingredienteOld.Almacenamiento = ingrediente.Almacenamiento;
-            ingredienteOld.Sustitutivo = ingrediente.Sustitutivo;
-            ingredienteOld.Medible = ingrediente.Medible;
-            this.context.SaveChanges();
+            
         }
         public async Task DeleteIngredienteAsync(int idIngrediente)
         {
-            Ingrediente ingrediente = await this.FindIngredienteByIdAsync(idIngrediente);
-            this.context.Ingredientes.Remove(ingrediente);
-            this.context.SaveChanges();
+            
         }
 
         #endregion
 
         #region USERS
+        public async Task<User> LoginUserAsync(string email, string password)
+        {
+            string request = "api/auth/login";
+            LoginModel userLogin = new LoginModel
+            {
+                Email = email,
+                Password = password
+            };
+            string jsonData = JsonConvert.SerializeObject(userLogin);
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                //client.DefaultRequestHeaders.Add("Authorization","Bearer " + token);
 
+
+                HttpResponseMessage response =
+                    await client.PostAsync(request, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseData = await response.Content.ReadAsStringAsync();
+                    User user = JsonConvert.DeserializeObject<User>(responseData);
+                    return user;
+                }
+                else
+                {
+                    throw new HttpRequestException("Error al iniciar sesión. Código de estado: " + (int)response.StatusCode);
+                }
+            }
+        }
+        public async Task<User> RegisterUserAsync(string nombre, string email, string password)
+        {
+            string request = "data/user";
+            UserReg userReg = new UserReg
+            {
+                Nombre=nombre,
+                Email = email,
+                Password = password
+            };
+            string jsonData = JsonConvert.SerializeObject(userReg);
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                //client.DefaultRequestHeaders.Add("Authorization","Bearer " + token);
+
+
+                HttpResponseMessage response =
+                    await client.PostAsync(request, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseData = await response.Content.ReadAsStringAsync();
+                    User user = JsonConvert.DeserializeObject<User>(responseData);
+                    return user;
+                }
+                else
+                {
+                    throw new HttpRequestException("Error al iniciar sesión. Código de estado: " + (int)response.StatusCode);
+                }
+            }
+        }
+        public bool Valid(User user)
+        {
+            return true;
+        }
+
+        public async Task<List<User>> GetUsersAsync()
+        {
+            string request = "data/User";
+            List<User> users =
+                await this.CallApiAsync<List<User>>(request);
+            return users;
+        }
+        public async Task<int> CountUsersAsync()
+        {
+            string request = "data/user/countusers";
+            int receta =
+                await this.CallApiAsync<int>(request);
+            return receta;
+        }
+        public async Task<User> FindUserByIdAsync(int IdUser)
+        {
+            string request = "data/user/"+IdUser;
+            User user =
+                await this.CallApiAsync<User>(request);
+            return user;
+        }
+
+        public async Task UpdateUserAsync(int idUser, string nombre, string email, string password)
+        {
+            
+        }
+        public async Task DeleteUserAsync(int idUsuario)
+        {
+            
+        }
         #endregion
 
         #region UTENSILIOS
+        public async Task<List<Utensilio>> GetUtensiliosAsync()
+        {
+            string request = "data/utensilio";
+            List<Utensilio> utensilios =
+                await this.CallApiAsync<List<Utensilio>>(request);
+            return utensilios;
+        }
+        public async Task<int> CountUtensiliosAsync()
+        {
+            string request = "data/utensilio/countutensilios";
+            int count =
+                await this.CallApiAsync<int>(request);
+            return count;
+        }
+        public async Task<Utensilio> FindUtensilioByIdAsync(int idUtensilio)
+        {
+            string request = "data/utensilio/"+idUtensilio;
+            Utensilio utensilio =
+                await this.CallApiAsync<Utensilio>(request);
+            return utensilio;
 
+        }
+        public async Task CreateUtensilioAsync(Utensilio utensilio)
+        {
+            string request = "data/utensilio";
+            string jsonData = JsonConvert.SerializeObject(utensilio);
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                //client.DefaultRequestHeaders.Add("Authorization","Bearer " + token);
+
+
+                HttpResponseMessage response =
+                    await client.PostAsync(request, content);
+            }
+        }
+        public async Task UpdateUtensilioAsync(Utensilio utensilio)
+        {
+            
+        }
+        public async Task DeleteUtensilioAsync(int idUtensilio)
+        {
+            
+        }
         #endregion
     }
 }

@@ -80,7 +80,7 @@ namespace CupMetric.Controllers
         public async Task<IActionResult> Create()
         {
             List<Categoria> categorias = await this.service.GetCategoriasAsync();
-            List<Ingrediente> ingredientes = await this.serviceIngredientes.GetIngredientesAsync();
+            List<Ingrediente> ingredientes = await this.service.GetIngredientesAsync();
             ViewData["CATEGORIAS"] = categorias;
             ViewData["INGREDIENTES"] = ingredientes;
             return View();

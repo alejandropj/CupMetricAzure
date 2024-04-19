@@ -17,6 +17,7 @@ builder.Services.AddAuthentication(options =>
     {
         config.AccessDeniedPath = "/Managed/ErrorAcceso";
     });
+builder.Services.AddHttpContextAccessor();
 // Add services to the container.
 builder.Services.AddTransient<ServiceApiCupmetric>();
 builder.Services.AddControllersWithViews(
