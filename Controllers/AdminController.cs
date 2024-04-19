@@ -1,33 +1,27 @@
 ﻿using CupMetric.Filters;
-using CupMetric.Repositories;
+using CupMetric.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CupMetric.Controllers
 {
     public class AdminController : Controller
     {
-        private RepositoryUsers repositoryUsers { get; set; }
-        private RepositoryReceta repositoryRecetas { get; set; }
-        private RepositoryUtensilios repositoryUtensilios { get; set; }
-        private RepositoryIngredientes repositoryIngredientes { get; set; }
+        private ServiceApiCupmetric service;
         public AdminController
-            (RepositoryUsers repoUsers, RepositoryReceta repoReceta, RepositoryUtensilios repoUtensilios, RepositoryIngredientes repoIngredientes)
+            (ServiceApiCupmetric service)
         {
-            this.repositoryUsers = repoUsers;
-            this.repositoryRecetas = repoReceta;
-            this.repositoryUtensilios = repoUtensilios;
-            this.repositoryIngredientes = repoIngredientes;
+            this.service = service;
         }
         [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Index()
         {
-            int conteoUsers = await this.repositoryUsers.CountUsersAsync();
+            int conteoUsers = await this.service.CountUsersAsync();
             ViewData["CONTEOUSERS"] = conteoUsers;
-            int conteoRecetas = await this.repositoryRecetas.CountRecetasAsync();
+            int conteoRecetas = await this.service.CountRecetasAsync();
             ViewData["CONTEORECETAS"] = conteoRecetas;
-            int conteoUtensilios = await this.repositoryUtensilios.CountUtensiliosAsync();
+            int conteoUtensilios = await this.service.CountUtensiliosAsync();
             ViewData["CONTEOUTENSILIOS"] = conteoUtensilios;
-            int conteoIngredientes = await this.repositoryIngredientes.CountIngredientesAsync();
+            int conteoIngredientes = await this.service.CountIngredientesAsync();
             ViewData["CONTEOINGREDIENTES"] = conteoIngredientes;
             return View();
         }

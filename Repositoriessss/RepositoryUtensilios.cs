@@ -1,4 +1,4 @@
-﻿using CupMetric.Data;
+﻿/*using CupMetric.Data;
 using CupMetric.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -56,3 +56,4 @@ namespace CupMetric.Repositories
         }
     }
 }
+*/

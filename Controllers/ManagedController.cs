@@ -1,6 +1,6 @@
 ﻿using CupMetric.Filters;
 using CupMetric.Models;
-using CupMetric.Repositories;
+using CupMetric.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -12,10 +12,10 @@ namespace CupMetric.Controllers
 {
     public class ManagedController : Controller
     {
-        private RepositoryUsers repo;
-        public ManagedController(RepositoryUsers repo)
+        private ServiceApiCupmetric service;
+        public ManagedController(ServiceApiCupmetric service)
         {
-            this.repo = repo;
+            this.service = service;
         }
         public ActionResult Login()
         {
@@ -24,7 +24,7 @@ namespace CupMetric.Controllers
         [HttpPost]
         public async Task<ActionResult> LoginAsync(string email, string password)
         {
-            User usuario = await this.repo.LoginUserAsync(email, password);
+            User usuario = await this.service.LoginUserAsync(email, password);
             if (usuario != null)
             {
                 ClaimsIdentity identity = new ClaimsIdentity(
@@ -72,7 +72,7 @@ namespace CupMetric.Controllers
         public async Task<IActionResult> Personal()
         {
             int idUser = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            User user = await this.repo.FindUserByIdAsync(idUser);
+            User user = await this.service.FindUserByIdAsync(idUser);
             return View(user);
         }
     }

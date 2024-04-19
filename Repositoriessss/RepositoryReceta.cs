@@ -1,4 +1,4 @@
-﻿using CupMetric.Data;
+﻿/*using CupMetric.Data;
 using CupMetric.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ using System.Runtime.Intrinsics.X86;
 namespace CupMetric.Repositories
 {
     #region Procedimientos Almacenados
-/*  CREATE PROCEDURE SP_RECETA_VALORACION_INGREDIENTES
+*//*  CREATE PROCEDURE SP_RECETA_VALORACION_INGREDIENTES
     (@IDRECETA INT, @VALORACION INT OUT)
     AS
 	    SELECT @VALORACION = ISNULL(AVG(VALORACION), 1) FROM VALORACIONES WHERE IDRECETA=@IDRECETA
@@ -18,7 +18,7 @@ namespace CupMetric.Repositories
         FROM INGREDIENTE_RECETA AS IR
         INNER JOIN INGREDIENTE AS I ON IR.IDINGREDIENTE = I.IDINGREDIENTE
         WHERE IR.IDRECETA = @IDRECETA;
-    GO*/
+    GO*//*
     #endregion
     public class RepositoryReceta
     {
@@ -218,19 +218,7 @@ namespace CupMetric.Repositories
             }
             return recetasFormateadas;
         }
-        //Completar
-/*        public async Task<List<Receta>> FilterRecetaByIngredienteAsync(int[] IdIngredientes)
-        {
-            string sql = "SELECT * FROM RECETA";
-            var consulta = new List<Receta>();
-            foreach (var id in IdIngredientes)
-            {
-                var receta = await this.context.Recetas.FromSqlRaw(sql).Where(r => r.IdCategoria == id).ToListAsync();
-                consulta.AddRange(receta);
-            }
 
-            return consulta;
-        }*/
 
         public async Task<bool> PostValoracionAsync(int idReceta, int idUsuario, int valoracion)
         {
@@ -257,9 +245,9 @@ namespace CupMetric.Repositories
 
         public async Task<List<Ingrediente>> FindIngredientesbyReceta(int idReceta)
         {
-            /*            var consulta = from datos in this.context.IngredientesReceta
+            *//*            var consulta = from datos in this.context.IngredientesReceta
                                        where datos.IdReceta == idReceta
-                                       select datos;*/
+                                       select datos;*//*
 
             var ingredientes = from ingReceta in this.context.IngredientesReceta
                                join ingrediente in this.context.Ingredientes on ingReceta.IdIngrediente equals ingrediente.IdIngrediente
@@ -270,3 +258,4 @@ namespace CupMetric.Repositories
         }
     }
 }
+*/

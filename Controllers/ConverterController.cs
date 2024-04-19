@@ -1,30 +1,29 @@
 ﻿using CupMetric.Models;
-using CupMetric.Repositories;
+using CupMetric.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CupMetric.Controllers
 {
     public class ConverterController : Controller
     {
-        private RepositoryIngredientes repoIngredientes { get; set; }
-        private RepositoryUtensilios repoUtensilios { get; set; }
-        public ConverterController(RepositoryIngredientes repositoryIngredientes, RepositoryUtensilios repositoryUtensilios) {
-            this.repoIngredientes = repositoryIngredientes;
-            this.repoUtensilios = repositoryUtensilios;
+        private ServiceApiCupmetric service;
+        public ConverterController(ServiceApiCupmetric service)
+        {
+            this.service = service;
         }
         public async Task<IActionResult> Index()
         {
-            List<Ingrediente> ingredientes = await this.repoIngredientes.GetIngredientesMediblesAsync();
+            List<Ingrediente> ingredientes = await this.service.GetIngredientesMediblesAsync();
             ViewData["INGREDIENTES"] = ingredientes;
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> Index(int ingrediente, double cantidad, int unidad)
         {
-            List<Ingrediente> ingredientes = await this.repoIngredientes.GetIngredientesMediblesAsync();
+            List<Ingrediente> ingredientes = await this.service.GetIngredientesMediblesAsync();
             ViewData["INGREDIENTES"] = ingredientes;
-            List<Utensilio> utensilios = await this.repoUtensilios.GetUtensiliosAsync();
-            Ingrediente ingr = await this.repoIngredientes.FindIngredienteByIdAsync(ingrediente);
+            List<Utensilio> utensilios = await this.service.GetUtensiliosAsync();
+            Ingrediente ingr = await this.service.FindIngredienteByIdAsync(ingrediente);
             if (ingr.Densidad != null)
             {
                 double densidad = ingr.Densidad.Value;

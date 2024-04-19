@@ -1,7 +1,5 @@
-using CupMetric.Data;
-using CupMetric.Repositories;
+using CupMetric.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,20 +18,16 @@ builder.Services.AddAuthentication(options =>
         config.AccessDeniedPath = "/Managed/ErrorAcceso";
     });
 // Add services to the container.
+builder.Services.AddTransient<ServiceApiCupmetric>();
 builder.Services.AddControllersWithViews(
     options => options.EnableEndpointRouting = false
     ).AddSessionStateTempDataProvider();
 
-
-string connectionString = builder.Configuration.GetConnectionString("SqlServerUrl");
-
-builder.Services.AddTransient<RepositoryUsers>();
-builder.Services.AddTransient<RepositoryReceta>();
-builder.Services.AddTransient<RepositoryUtensilios>();
-builder.Services.AddTransient<RepositoryIngredientes>();
-builder.Services.AddSession();
-builder.Services.AddDbContext<CupMetricContext>
-    (options => options.UseSqlServer(connectionString));
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+}
+    );
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly",

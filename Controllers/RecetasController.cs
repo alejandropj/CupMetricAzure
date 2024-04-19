@@ -1,6 +1,6 @@
 ﻿using CupMetric.Filters;
 using CupMetric.Models;
-using CupMetric.Repositories;
+using CupMetric.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -9,18 +9,16 @@ namespace CupMetric.Controllers
 {
     public class RecetasController : Controller
     {
-        private RepositoryReceta repo;
-        private RepositoryIngredientes repoIngredientes;
-        public RecetasController(RepositoryReceta repo, RepositoryIngredientes repoIngredientes)
+        private ServiceApiCupmetric service;
+        public RecetasController(ServiceApiCupmetric service)
         {
-            this.repo = repo;
-            this.repoIngredientes = repoIngredientes;
+            this.service = service;
         }
         public async Task<IActionResult> Index()
         {
-            List<RecetaIngredienteValoracion> recetas = await this.repo.GetRecetasFormattedAsync();
+            List<RecetaIngredienteValoracion> recetas = await this.service.GetRecetasFormattedAsync();
             ViewData["SelectedFilter"] = 0;
-            ViewData["CATEGORIAS"] = await this.repo.GetCategoriasAsync();
+            ViewData["CATEGORIAS"] = await this.service.GetCategoriasAsync();
             return View(recetas);
         }
         [HttpPost]
@@ -29,20 +27,20 @@ namespace CupMetric.Controllers
             List<RecetaIngredienteValoracion> recetas;
             if (filter == 0)
             {
-                recetas = await this.repo.GetRecetasFormattedAsync();
+                recetas = await this.service.GetRecetasFormattedAsync();
             }
             else
             {
-                recetas = await this.repo.FilterRecetaByCategoriaAsync(filter);
+                recetas = await this.service.FilterRecetaByCategoriaAsync(filter);
             }
             ViewData["SelectedFilter"] = filter;
-            ViewData["CATEGORIAS"] = await this.repo.GetCategoriasAsync();
+            ViewData["CATEGORIAS"] = await this.service.GetCategoriasAsync();
             return View(recetas);
         }
         public async Task<IActionResult> Receta(int idreceta)
         {
-            RecetaIngredienteValoracion receta = await this.repo.FindRecetaFormattedAsync(idreceta);
-            await this.repo.AddVisitRecetaAsync(idreceta);
+            RecetaIngredienteValoracion receta = await this.service.FindRecetaFormattedAsync(idreceta);
+            await this.service.AddVisitRecetaAsync(idreceta);
             return View(receta);
         }
         [AuthorizeUsuarios]
@@ -50,7 +48,7 @@ namespace CupMetric.Controllers
         public async Task<IActionResult> Receta(int idreceta, int valoracion)
         {
             int idUsuario = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            bool exists = await this.repo.PostValoracionAsync(idreceta, idUsuario ,valoracion);
+            bool exists = await this.service.PostValoracionAsync(idreceta, idUsuario ,valoracion);
             if (exists)
             {
                 ViewData["MENSAJE"] = "Ya has valorado esta receta";
@@ -61,7 +59,7 @@ namespace CupMetric.Controllers
             }
 
             //Carga
-            RecetaIngredienteValoracion receta = await this.repo.FindRecetaFormattedAsync(idreceta);
+            RecetaIngredienteValoracion receta = await this.service.FindRecetaFormattedAsync(idreceta);
             return View(receta);
         }
 
@@ -69,20 +67,20 @@ namespace CupMetric.Controllers
         [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> List()
         {
-            List<Receta> recetas = await this.repo.GetRecetasAsync();
+            List<Receta> recetas = await this.service.GetRecetasAsync();
             return View(recetas);
         }
         [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Details(int idReceta)
         {
-            Receta receta = await this.repo.FindRecetaByIdAsync(idReceta);
+            Receta receta = await this.service.FindRecetaByIdAsync(idReceta);
             return View(receta);
         }
         [AuthorizeUsuarios]
         public async Task<IActionResult> Create()
         {
-            List<Categoria> categorias = await this.repo.GetCategoriasAsync();
-            List<Ingrediente> ingredientes = await this.repoIngredientes.GetIngredientesAsync();
+            List<Categoria> categorias = await this.service.GetCategoriasAsync();
+            List<Ingrediente> ingredientes = await this.serviceIngredientes.GetIngredientesAsync();
             ViewData["CATEGORIAS"] = categorias;
             ViewData["INGREDIENTES"] = ingredientes;
             return View();
@@ -104,7 +102,7 @@ namespace CupMetric.Controllers
             }
             receta.Visitas = 0;
 
-            await this.repo.CreateRecetaAsync(receta, idIngredientes, cantidades);
+            await this.service.CreateRecetaAsync(receta, idIngredientes, cantidades);
 
             var role = HttpContext.User.FindFirstValue(ClaimTypes.Role);
             if (int.Parse(role) == 2)
@@ -120,14 +118,14 @@ namespace CupMetric.Controllers
         [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Update(int idReceta)
         {
-            Receta receta = await this.repo.FindRecetaByIdAsync((int)idReceta);
+            Receta receta = await this.service.FindRecetaByIdAsync((int)idReceta);
             return View(receta);
         }
         [HttpPost]
         [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<IActionResult> Update(Receta receta)
         {
-            await this.repo.UpdateRecetaAsync(receta);
+            await this.service.UpdateRecetaAsync(receta);
             return RedirectToAction("List");
         }
         [AuthorizeUsuarios(Policy = "AdminOnly")]
@@ -143,7 +141,7 @@ namespace CupMetric.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            await this.repo.DeleteRecetaAsync(idReceta);
+            await this.service.DeleteRecetaAsync(idReceta);
             return RedirectToAction("List");
         }
     }

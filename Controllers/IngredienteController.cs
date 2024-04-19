@@ -1,6 +1,6 @@
 ﻿using CupMetric.Filters;
 using CupMetric.Models;
-using CupMetric.Repositories;
+using CupMetric.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,21 +8,21 @@ namespace CupMetric.Controllers
 {
     public class IngredienteController : Controller
     {
-        private RepositoryIngredientes repo;
-        public IngredienteController(RepositoryIngredientes repo)
+        private ServiceApiCupmetric service;
+        public IngredienteController(ServiceApiCupmetric service)
         {
-            this.repo = repo;
+            this.service = service;
         }
         [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<ActionResult> List()
         {
-            List<Ingrediente> ingredientes = await this.repo.GetIngredientesAsync();
+            List<Ingrediente> ingredientes = await this.service.GetIngredientesAsync();
             return View(ingredientes);
         }
         [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<ActionResult> Details(int idIngrediente)
         {
-            Ingrediente ingrediente = await this.repo.FindIngredienteByIdAsync(idIngrediente);
+            Ingrediente ingrediente = await this.service.FindIngredienteByIdAsync(idIngrediente);
             return View(ingrediente);
         }
         [AuthorizeUsuarios(Policy = "AdminOnly")]
@@ -35,13 +35,13 @@ namespace CupMetric.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Ingrediente ingrediente)
         {
-                await this.repo.CreateIngredienteAsync(ingrediente);
+                await this.service.CreateIngredienteAsync(ingrediente);
                 return RedirectToAction("List");
         }
         [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<ActionResult> Update(int idingrediente)
         {
-            Ingrediente ingrediente = await this.repo.FindIngredienteByIdAsync(idingrediente);
+            Ingrediente ingrediente = await this.service.FindIngredienteByIdAsync(idingrediente);
             return View(ingrediente);
         }
 
@@ -49,13 +49,13 @@ namespace CupMetric.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Ingrediente ingrediente)
         {
-            await this.repo.UpdateIngredienteAsync(ingrediente);
+            await this.service.UpdateIngredienteAsync(ingrediente);
                 return RedirectToAction("List");
         }
         [AuthorizeUsuarios(Policy = "AdminOnly")]
         public async Task<ActionResult> Delete(int idingrediente)
         {
-            await this.repo.DeleteIngredienteAsync(idingrediente);
+            await this.service.DeleteIngredienteAsync(idingrediente);
             return RedirectToAction("List");
         }
     }
