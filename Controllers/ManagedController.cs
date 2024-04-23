@@ -24,20 +24,22 @@ namespace CupMetric.Controllers
         [HttpPost]
         public async Task<ActionResult> LoginAsync(string email, string password)
         {
-            User usuario = await this.service.LoginUserAsync(email, password);
-            if (usuario != null)
+            TokenModel model = await this.service.LoginUserAsync(email, password);
+            if (model != null)
             {
+                HttpContext.Session.SetString("TOKEN", model.response);
+
                 ClaimsIdentity identity = new ClaimsIdentity(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     ClaimTypes.Name, ClaimTypes.Role);
 
-                Claim claimName = new Claim(ClaimTypes.Name, usuario.Nombre);
+                Claim claimName = new Claim(ClaimTypes.Name, model.user.Nombre);
                 identity.AddClaim(claimName);
-                Claim claimId = new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString());
+                Claim claimId = new Claim(ClaimTypes.NameIdentifier, model.user.IdUsuario.ToString());
                 identity.AddClaim(claimId);
-                Claim claimRole = new Claim(ClaimTypes.Role, usuario.IdRol.ToString());
+                Claim claimRole = new Claim(ClaimTypes.Role, model.user.IdRol.ToString());
                 identity.AddClaim(claimRole);
-                if (usuario.IdRol == 2)
+                if (model.user.IdRol == 2)
                 {
                     //CREAMOS SU PROPIO Y UNICO CLAIM
                     identity.AddClaim

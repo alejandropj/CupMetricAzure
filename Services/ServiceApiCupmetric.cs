@@ -329,7 +329,14 @@ namespace CupMetric.Services
         #endregion
 
         #region USERS
-        public async Task<User> LoginUserAsync(string email, string password)
+        public async Task<User> GetUser()
+        {
+            string request = "api/auth/user";
+            User user = await this.CallApiAsync<User>(request);
+            return user;
+        } 
+
+        public async Task<TokenModel> LoginUserAsync(string email, string password)
         {
             string request = "api/auth/login";
             LoginModel userLogin = new LoginModel
@@ -344,23 +351,14 @@ namespace CupMetric.Services
                 client.BaseAddress = new Uri(this.UrlApiCupmetric);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.Header);
-                //client.DefaultRequestHeaders.Add("Authorization","Bearer " + token);
-
 
                 HttpResponseMessage response =
                     await client.PostAsync(request, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    //string request = "data/user/" + idReceta;
-                    RecetaIngredienteValoracion receta =
-                        await this.CallApiAsync<RecetaIngredienteValoracion>(request);
-
-                    User user = new User();
-
-
-                    //User user = JsonConvert.DeserializeObject<User>(responseData);
                     string responseData = await response.Content.ReadAsStringAsync();
-                    return user;
+                    TokenModel model = JsonConvert.DeserializeObject<TokenModel>(responseData);
+                    return model;
                 }
                 else
                 {
