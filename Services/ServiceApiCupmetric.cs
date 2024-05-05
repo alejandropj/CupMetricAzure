@@ -3,10 +3,6 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using CupMetric.Models;
-using System.Data;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Net.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using CupMetric.Helpers;
 using ApiCupMetric.Models;
 
@@ -319,11 +315,31 @@ namespace CupMetric.Services
         }
         public async Task UpdateIngredienteAsync(Ingrediente ingrediente)
         {
-            
+            string request = "data/ingredientes";
+            string jsonData = JsonConvert.SerializeObject(ingrediente);
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                HttpResponseMessage response =
+                    await client.PutAsync(request, content);
+
+            }
         }
         public async Task DeleteIngredienteAsync(int idIngrediente)
         {
-            
+            string request = "data/ingredientes/" + idIngrediente;
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                HttpResponseMessage response =
+                    await client.DeleteAsync(request);
+
+            }
         }
 
         #endregion
@@ -428,11 +444,38 @@ namespace CupMetric.Services
 
         public async Task UpdateUserAsync(int idUser, string nombre, string email, string password)
         {
-            
+            string request = "data/user";
+            string salt = HelperTools.GenerateSalt();
+            byte[] passwordEnc = HelperEncrypt.EncryptPassword(password, salt);
+            User usuario = new User{
+                IdUsuario=idUser,
+                Nombre=nombre,
+                Email=email,
+                Password=passwordEnc};
+            string jsonData = JsonConvert.SerializeObject(usuario);
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                HttpResponseMessage response =
+                    await client.PutAsync(request, content);
+
+            }
         }
         public async Task DeleteUserAsync(int idUsuario)
         {
-            
+            string request = "data/user/" + idUsuario;
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                HttpResponseMessage response =
+                    await client.DeleteAsync(request);
+
+            }
         }
         #endregion
 
@@ -478,11 +521,31 @@ namespace CupMetric.Services
         }
         public async Task UpdateUtensilioAsync(Utensilio utensilio)
         {
-            
+            string request = "data/utensilio";
+            string jsonData = JsonConvert.SerializeObject(utensilio);
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                HttpResponseMessage response =
+                    await client.PutAsync(request, content);
+
+            }
         }
         public async Task DeleteUtensilioAsync(int idUtensilio)
         {
-            
+            string request = "data/utensilio/" + idUtensilio;
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCupmetric);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                HttpResponseMessage response =
+                    await client.DeleteAsync(request);
+
+            }
         }
         #endregion
     }
